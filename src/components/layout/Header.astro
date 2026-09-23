@@ -1,0 +1,492 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import logo from '@/assets/images/dentinos-logo.png';
+import locationIcon from '@/assets/icons/location.png';
+import emailIcon from '@/assets/icons/email.png';
+import whatsappIcon from '@/assets/icons/whatsapp.png';
+import { mainNav } from '@/data/navigation';
+import { contactLinks, appointmentHref, site } from '@/data/site';
+import type { ContactLinkType } from '@/data/site';
+
+const contactIcons: Record<ContactLinkType, ImageMetadata> = {
+  location: locationIcon,
+  email: emailIcon,
+  whatsapp: whatsappIcon,
+};
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
+---
+
+<header class="site-header">
+  <div class="header-inner container-header">
+    <!-- Logo -->
+    <a href="/" class="logo" aria-label={`${site.legalName} — inicio`}>
+      <Image
+        src={logo}
+        alt={site.legalName}
+        widths={[144, 288]}
+        sizes="144px"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </a>
+
+    <!-- Navegación de escritorio (lg+) -->
+    <nav class="nav-desktop" aria-label="Principal">
+      <ul class="nav-links">
+        {
+          mainNav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="nav-link"
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <ul class="nav-contact">
+        {
+          contactLinks.map((c) => (
+            <li>
+              <a href={c.href} class="contact-icon" aria-label={c.label}>
+                <Image
+                  src={contactIcons[c.type]}
+                  alt=""
+                  width={20}
+                  height={20}
+                  loading="eager"
+                />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <!-- CTA de escritorio (lg+) -->
+    <a href={appointmentHref} class="btn btn-primary cta-desktop">Agendar Cita</a>
+
+    <!-- Botón hamburguesa (< lg) -->
+    <button
+      type="button"
+      class="nav-toggle"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-nav-toggle
+    >
+      <span class="hamburger" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Menú móvil (< lg) -->
+  <div id="mobile-menu" class="mobile-menu" data-mobile-menu hidden>
+    <nav class="mobile-nav" aria-label="Menú móvil">
+      <ul class="mobile-links">
+        {
+          mainNav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="mobile-link"
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+                data-menu-link
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <ul class="mobile-contact">
+        {
+          contactLinks.map((c) => (
+            <li>
+              <a
+                href={c.href}
+                class="contact-icon contact-icon--lg"
+                aria-label={c.label}
+                data-menu-link
+              >
+                <Image src={contactIcons[c.type]} alt="" width={28} height={28} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a href={appointmentHref} class="btn btn-primary cta-mobile" data-menu-link>
+        Agendar Cita
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--color-white);
+    transition: box-shadow var(--duration-base) var(--ease-out-soft);
+  }
+
+  /* Sombra sutil solo al hacer scroll (la clase la añade el script). */
+  .site-header.is-scrolled {
+    box-shadow: 0 1px 0 0 var(--color-blue-light-active),
+      0 6px 20px -12px rgb(16 57 111 / 0.35);
+  }
+
+  .container-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    max-width: 90rem; /* 1440 */
+    min-height: var(--header-height);
+    margin-inline: auto;
+    /* 20px (móvil) → 31px (Figma 1440). Padding propio del header (más ajustado
+       que .container-site, cuyo máximo de 120px no aplica al chrome). */
+    padding-inline: clamp(1.25rem, 1.008rem + 1.033vw, 1.9375rem);
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: 4px;
+  }
+
+  .logo :global(img) {
+    height: clamp(1.75rem, 1.552rem + 0.845vw, 2.3125rem); /* 28 → 37px */
+    width: auto;
+  }
+
+  /* --- Navegación de escritorio ------------------------------------------- */
+  .nav-desktop {
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    /* Se pega al logo por la izquierda; el margen derecho lo da space-between. */
+    margin-right: auto;
+    margin-left: 2rem; /* 32px logo ↔ nav (33px Figma) */
+  }
+
+  .nav-links,
+  .nav-contact {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav-links {
+    gap: 0.875rem; /* 14px entre enlaces (Figma) */
+  }
+
+  .nav-contact {
+    gap: 1rem; /* 15px entre iconos (Figma) */
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.25rem;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.1875;
+    color: var(--color-blue-darker);
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-blue-dark);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .nav-link[aria-current='page'] {
+    font-weight: 700;
+  }
+
+  /* --- Iconos de contacto (placeholder) ---------------------------------- */
+  .contact-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-blue-darker);
+    transition: opacity var(--duration-base) var(--ease-out-soft);
+  }
+
+  .contact-icon:hover {
+    opacity: 0.65;
+  }
+
+  .contact-icon :global(img) {
+    width: 1.25rem; /* 20px (Figma) */
+    height: 1.25rem;
+  }
+
+  .contact-icon--lg :global(img) {
+    width: 1.75rem; /* 28px en el menú móvil */
+    height: 1.75rem;
+  }
+
+  /* --- CTA ---------------------------------------------------------------- */
+  .cta-desktop {
+    display: none;
+    flex-shrink: 0;
+  }
+
+  /* --- Botón hamburguesa ------------------------------------------------- */
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem; /* 44px objetivo táctil */
+    height: 2.75rem;
+    margin-right: -0.5rem; /* alinea el borde óptico con el padding */
+    color: var(--color-blue-darker);
+  }
+
+  .hamburger {
+    position: relative;
+    display: block;
+    width: 1.5rem;
+    height: 1rem;
+  }
+
+  .hamburger span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: currentColor;
+    border-radius: 2px;
+    transition: transform var(--duration-base) var(--ease-out-soft),
+      opacity var(--duration-base) var(--ease-out-soft),
+      top var(--duration-base) var(--ease-out-soft);
+  }
+
+  .hamburger span:nth-child(1) {
+    top: 0;
+  }
+  .hamburger span:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .hamburger span:nth-child(3) {
+    top: 100%;
+    transform: translateY(-100%);
+  }
+
+  /* Estado abierto → X */
+  .nav-toggle[aria-expanded='true'] .hamburger span:nth-child(1) {
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+  }
+  .nav-toggle[aria-expanded='true'] .hamburger span:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle[aria-expanded='true'] .hamburger span:nth-child(3) {
+    top: 50%;
+    transform: translateY(-50%) rotate(-45deg);
+  }
+
+  /* --- Menú móvil -------------------------------------------------------- */
+  .mobile-menu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--header-height);
+    bottom: 0;
+    z-index: 40;
+    background-color: var(--color-white);
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    transition: opacity var(--duration-base) var(--ease-out-soft),
+      transform var(--duration-base) var(--ease-out-soft);
+  }
+
+  .mobile-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-menu.is-open {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem clamp(1.25rem, 0.5rem + 3.2vw, 7.5rem) 3rem;
+  }
+
+  .mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .mobile-link {
+    display: block;
+    padding: 0.75rem 0;
+    font-weight: 500;
+    font-size: 1.25rem;
+    color: var(--color-blue-darker);
+    border-bottom: 1px solid var(--color-blue-light-active);
+  }
+
+  .mobile-link[aria-current='page'] {
+    font-weight: 700;
+  }
+
+  .mobile-contact {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0.5rem 0 0;
+  }
+
+  .cta-mobile {
+    align-self: flex-start;
+    width: 100%;
+    max-width: 20rem;
+    padding-block: 0.9375rem;
+  }
+
+  /* --- Desktop (lg ≥ 1024px): nav visible, sin hamburguesa --------------- */
+  @media (min-width: 1024px) {
+    .nav-desktop {
+      display: flex;
+    }
+    .cta-desktop {
+      display: inline-flex;
+    }
+    .nav-toggle {
+      display: none;
+    }
+    /* Mayor especificidad para ganar a .mobile-menu.is-open sin !important. */
+    .site-header .mobile-menu {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+
+  if (header && toggle && menu) {
+    const focusableSelector =
+      'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])';
+    let lastFocused: HTMLElement | null = null;
+
+    const getFocusable = () =>
+      Array.from(menu.querySelectorAll<HTMLElement>(focusableSelector)).filter(
+        (el) => el.offsetParent !== null,
+      );
+
+    const openMenu = () => {
+      lastFocused = document.activeElement as HTMLElement;
+      menu.hidden = false;
+      // Forzar reflow para que la transición de entrada se aplique.
+      void menu.offsetHeight;
+      menu.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Cerrar menú');
+      document.documentElement.style.overflow = 'hidden';
+      getFocusable()[0]?.focus();
+    };
+
+    const closeMenu = (returnFocus = true) => {
+      menu.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menú');
+      document.documentElement.style.overflow = '';
+      const onEnd = () => {
+        menu.hidden = true;
+        menu.removeEventListener('transitionend', onEnd);
+      };
+      menu.addEventListener('transitionend', onEnd);
+      if (returnFocus && lastFocused) lastFocused.focus();
+    };
+
+    const isOpen = () => toggle.getAttribute('aria-expanded') === 'true';
+
+    toggle.addEventListener('click', () => (isOpen() ? closeMenu() : openMenu()));
+
+    menu
+      .querySelectorAll('[data-menu-link]')
+      .forEach((link) => link.addEventListener('click', () => closeMenu(false)));
+
+    document.addEventListener('keydown', (e) => {
+      if (!isOpen()) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMenu();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const focusable = getFocusable();
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+
+        if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    // Si se pasa a escritorio con el menú abierto, restaurar el estado.
+    const desktopMq = window.matchMedia('(min-width: 1024px)');
+    desktopMq.addEventListener('change', (e) => {
+      if (e.matches && isOpen()) closeMenu(false);
+    });
+
+    // Sombra del header al hacer scroll.
+    const onScroll = () =>
+      header.classList.toggle('is-scrolled', window.scrollY > 4);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+</script>

@@ -108,6 +108,8 @@
   --header-height: clamp(4rem, 3.604rem + 1.69vw, 5.125rem);
   /* Margen lateral de piezas full-bleed (header, hero): 20 → 30px (Figma). */
   --gutter: clamp(1.25rem, 1.03rem + 0.939vw, 1.875rem);
+  /* Inset de secciones de contenido (Sobre nosotros, Servicios…): 20 → 82px. */
+  --inset-section: clamp(1.25rem, -0.13rem + 5.9vw, 7.625rem);
 
   /* --- Radios --------------------------------------------------------------- */
   --radius-btn: 1.25rem; /* 20px — botones y píldoras */
@@ -121,7 +123,10 @@
   --tracking-display: -0.04em;
   --text-lead: clamp(1rem, 0.375rem + 0.833vw, 1.5rem); /* 16 → 18px @1440 → 24px */
   --leading-lead: 1.35;
+  --text-h2: clamp(1.625rem, 1.405rem + 0.939vw, 2.875rem); /* 26 → 36px @1440 → 46px */
   --text-h3: clamp(1.25rem, 1.162rem + 0.376vw, 1.875rem); /* 20 → 24px @1440 → 30px */
+  --text-body: clamp(1rem, 0.0625rem + 1.04vw, 1.3125rem); /* 16px (mín) → 21px */
+  --text-card-title: clamp(1.125rem, 0.5rem + 0.833vw, 1.5rem); /* 18 → 20px @1440 → 24px */
   --text-eyebrow: clamp(0.625rem, 0.2875rem + 0.375vw, 0.8125rem); /* 10px @1440 (mín 10) → 13px */
   --text-rating: 0.625rem; /* 10px — pie de reseñas */
 
@@ -131,6 +136,9 @@
 
   /* Color funcional FUERA de paleta (aprobado): estrellas de reseñas Google. */
   --color-rating-star: #FFCC00;
+
+  /* Gris de líneas divisorias (extraído de Figma, fuera de la paleta Blue). */
+  --color-divider: #A2A2A2;
 
   /* --- Sombras ------------------------------------------------------------- */
   --shadow-badge: 0 1px 4px rgb(0 0 0 / 0.15); /* píldora de ubicación */
@@ -269,6 +277,24 @@
 
   .btn-secondary:hover {
     background-color: var(--color-white);
+  }
+
+  /* Título itálico de sección (24px @1440), junto al eyebrow. */
+  .section-title {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--text-h3);
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  /* Palabra en acento serif itálica (p. ej. «Dental.», «Sonrisa.»). */
+  .accent {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
   }
 
   /* Etiqueta/eyebrow de sección (píldora "Sobre nosotros", etc.).

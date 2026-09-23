@@ -1,0 +1,211 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+
+/*
+ * Contenido exclusivo de esta sección (§7). Normalizado desde el Figma:
+ * «DentAll» → «Dentinos» y «Coral Gables, Miami» → «Teatinos, Málaga»
+ * (eran restos de plantilla). Ver aviso al entregar.
+ */
+const features = [
+  {
+    icon: 'feat-mouth-mirror',
+    title: 'Tecnología que mejora decisiones',
+    body: 'Utilizamos el escáner intraoral iTero® para obtener imágenes digitales de la boca y facilitar una evaluación más precisa y cómoda.',
+  },
+  {
+    icon: 'feat-live-chat',
+    title: 'Trato cercano, responsable y comprometido',
+    body: 'Desde odontología general y estética hasta implantes y ortodoncia, Dentinos reúne diferentes áreas de atención para acompañarte durante tu tratamiento.',
+  },
+  {
+    icon: 'feat-tablet',
+    title: 'Especialistas y formación continua',
+    body: 'Las herramientas de diagnóstico y planificación digital permiten evaluar tu caso y explicar las diferentes opciones de tratamiento de forma clara.',
+  },
+  {
+    icon: 'feat-location',
+    title: 'Salud y criterio clínico',
+    body: 'Estamos ubicados en Teatinos, Málaga, con una ubicación accesible para pacientes de Teatinos y áreas cercanas.',
+  },
+];
+
+const areas = ['a', 'b', 'c', 'd'];
+---
+
+<section class="why" aria-labelledby="why-title">
+  <div class="why__inner">
+    <header class="why__head">
+      <p class="eyebrow">¿Por qué elegirnos?</p>
+      <h2 id="why-title" class="section-title">
+        Una atención dental basada en precisión, tecnología y experiencia.
+      </h2>
+    </header>
+
+    <div class="why__grid">
+      <div class="why__image">
+        <Image
+          src={img('equipo-dentinos')}
+          alt="Equipo de profesionales de la Clínica Dental Dentinos"
+          widths={[305, 460, 610]}
+          sizes="(min-width: 1024px) 22vw, (min-width: 768px) 24rem, 90vw"
+        />
+      </div>
+
+      {
+        features.map((f, i) => (
+          <article class:list={['feature', `feature--${areas[i]}`]}>
+            <div class="feature__head">
+              <span class="feature__icon">
+                <Image src={img(f.icon)} alt="" class="feature__icon-img" />
+              </span>
+              <div class="feature__titles">
+                <h3 class="feature__title">{f.title}</h3>
+                {f.subtitle && <p class="feature__subtitle">{f.subtitle}</p>}
+              </div>
+            </div>
+            <p class="feature__body">{f.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .why {
+    background-color: var(--color-white);
+    padding-block: clamp(3rem, 1.5rem + 6vw, 6.25rem);
+  }
+
+  .why__inner {
+    padding-inline: var(--inset-section);
+  }
+
+  .why__head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1rem);
+    margin-bottom: clamp(2rem, 1rem + 3vw, 3.5rem);
+  }
+
+  .why__grid {
+    display: grid;
+    gap: clamp(1rem, 0.89rem + 0.47vw, 1.75rem); /* → 21px */
+  }
+
+  /* --- Imagen central -------------------------------------------------- */
+  .why__image {
+    justify-self: center;
+    width: 100%;
+    max-width: 22rem;
+    aspect-ratio: 305 / 443;
+    border-radius: var(--radius-media);
+    overflow: hidden;
+  }
+
+  .why__image :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* --- Tarjeta --------------------------------------------------------- */
+  .feature {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 0.7rem + 1.2vw, 1.625rem);
+    padding: clamp(1.25rem, 1rem + 1.1vw, 1.625rem);
+    background-color: var(--color-blue-light-hover);
+    border-radius: var(--radius-media);
+  }
+
+  .feature__head {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1.0625rem);
+  }
+
+  .feature__icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: clamp(2.75rem, 2.4rem + 0.85vw, 3.25rem); /* → ~50px */
+    aspect-ratio: 1;
+    background-color: var(--color-blue-darker);
+    border-radius: var(--radius-btn); /* 20px */
+  }
+
+  .feature__icon-img {
+    width: 54%; /* 27/50 */
+    height: auto;
+    /* Iconos exportados oscuros → se fuerzan a blanco sobre la caja azul. */
+    filter: brightness(0) invert(1);
+  }
+
+  .feature__titles {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .feature__title {
+    font-size: var(--text-card-title); /* 20px */
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .feature__subtitle {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1.2;
+    color: var(--color-blue-darker);
+  }
+
+  .feature__body {
+    font-size: var(--text-body); /* 16px */
+    line-height: 1.35;
+    color: var(--color-blue-darker);
+  }
+
+  /* --- Tablet (≥ 768px): tarjetas 2×2, imagen a lo ancho arriba ------- */
+  @media (min-width: 768px) {
+    .why__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .why__image {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* --- Escritorio (≥ 1024px): 2×2 con la imagen al centro ------------- */
+  @media (min-width: 1024px) {
+    .why__grid {
+      grid-template-columns: minmax(0, 464fr) minmax(0, 305fr) minmax(0, 464fr);
+      align-items: stretch;
+      grid-template-areas:
+        'a img b'
+        'c img d';
+    }
+    .why__image {
+      grid-area: img;
+      grid-column: auto;
+      max-width: none;
+      aspect-ratio: auto;
+    }
+    .feature--a {
+      grid-area: a;
+    }
+    .feature--b {
+      grid-area: b;
+    }
+    .feature--c {
+      grid-area: c;
+    }
+    .feature--d {
+      grid-area: d;
+    }
+  }
+</style>

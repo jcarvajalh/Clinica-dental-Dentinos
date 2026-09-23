@@ -464,6 +464,12 @@ Servir con `Content-Type: text/plain; charset=utf-8`.
 |2026-09-23|CTA "Agendar Cita" + "Teleconsulta" extraídos a componente reutilizable `components/ui/CtaButtons.astro` (prop `size`: `lg` hero / `sm` compacto). Usado en hero y en Sobre nosotros.|
 |2026-09-23|Botones: `.btn-xs` (12px, radio 15px) para CTA dentro de bloques de texto; `.btn-sm`/`.btn-xs` con `min-height: 44px` en móvil (área táctil, §11).|
 |2026-09-23|Eyebrow/etiqueta de sección: clase reutilizable `.eyebrow` (10px @1440 vía `--text-eyebrow`, padding `0.6em 1.5em` = 6px/15px que escala con la fuente). Usar en todas las secciones que lleven ese titulito.|
+|2026-09-23|Clases compartidas: `.section-title` (título itálico 24px de sección) y `.accent` (palabra serif itálica como «Dental.»/«Sonrisa.»). Refactorizados hero y Sobre nosotros para usarlas.|
+|2026-09-23|Datos de tratamientos en `src/data/tratamientos.ts` (slug, name, summary, description?, image?, href). Solo «Odontología estética» tiene descripción larga + imagen; el resto [PENDIENTE].|
+|2026-09-23|Sección "Servicios" (`_home/03-Servicios.astro`): patrón tabs accesible (`role=tablist/tab/tabpanel`, flechas + Home/End, roving tabindex), JS vanilla. Lista izq. selecciona imagen + panel dcha. `--color-divider: #A2A2A2` (gris de líneas, de Figma, fuera de paleta). Tokens `--text-h2`, `--text-body`.|
+|2026-09-23|**Escala tipográfica estándar:** párrafos normales 16px (`--text-body`); textos destacados —entradilla hero, Sobre nosotros, descripción de panel— 18px (`--text-lead`); títulos dentro de cards 20px (`--text-card-title`); acento serif contextual (24px `--text-h3` en el panel de Servicios). Todos escalan por encima de 1440.|
+|2026-09-23|Token `--inset-section` (~82px @1440) para el inset lateral de secciones de contenido (Sobre nosotros, Servicios, ¿Por qué elegirnos?).|
+|2026-09-23|Sección "¿Por qué elegirnos?" (`_home/04-PorQueElegirnos.astro`): 4 cards (2×2) con imagen central (grid-areas en lg). Iconos oscuros forzados a blanco con `filter: brightness(0) invert(1)`; prefijo `feat-` para evitar choque con `location.png` del header. Contenido normalizado: «DentAll»→«Dentinos», «Coral Gables, Miami»→«Teatinos, Málaga».|
 |2026-09-23|Sección "Sobre nosotros" (`_home/02-SobreNosotros.astro`): `<h2>` = "Clínica moderna y acogedora" (itálica), píldora "Sobre nosotros" como eyebrow. El cuerpo largo repetido de Figma era relleno → 1 párrafo real + marcador `[TEXTO PENDIENTE]`. CTA al mismo tamaño que el hero (`CtaButtons size="lg"`).|
 
 

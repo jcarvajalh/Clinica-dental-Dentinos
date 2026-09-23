@@ -8,7 +8,7 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
   <div class="about__inner">
     <header class="about__head">
       <p class="eyebrow">Sobre nosotros</p>
-      <h2 id="about-title" class="about__title">Clínica moderna y acogedora</h2>
+      <h2 id="about-title" class="section-title">Clínica moderna y acogedora</h2>
     </header>
 
     <div class="about__media">
@@ -59,8 +59,7 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
   .about__inner {
     display: grid;
     gap: clamp(2rem, 1.2rem + 3vw, 3.625rem);
-    /* Inset de contenido: 20px (móvil) → 81px (Figma); sigue creciendo. */
-    padding-inline: clamp(1.25rem, -0.094rem + 5.73vw, 7.5rem);
+    padding-inline: var(--inset-section);
   }
 
   /* --- Encabezado (píldora + subtítulo en itálica) ---------------------- */
@@ -69,16 +68,6 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
     align-items: center;
     flex-wrap: wrap;
     gap: clamp(0.75rem, 0.5rem + 1vw, 1rem);
-  }
-
-  .about__title {
-    font-family: var(--font-sans);
-    font-style: italic;
-    font-weight: 400;
-    font-size: var(--text-h3);
-    line-height: 1.2;
-    letter-spacing: -0.04em;
-    color: var(--color-blue-darker);
   }
 
   /* --- Collage de imágenes (dos fotos, base alineada) ------------------- */

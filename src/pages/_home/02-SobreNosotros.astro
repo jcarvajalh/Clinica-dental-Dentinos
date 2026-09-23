@@ -1,0 +1,142 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+---
+
+<section class="about" aria-labelledby="about-title">
+  <div class="about__inner">
+    <header class="about__head">
+      <p class="eyebrow">Sobre nosotros</p>
+      <h2 id="about-title" class="about__title">Clínica moderna y acogedora</h2>
+    </header>
+
+    <div class="about__media">
+      <Image
+        src={img('nosotros-equipo')}
+        alt="Equipo de la Clínica Dental Dentinos atendiendo a una paciente"
+        widths={[160, 240, 320, 440]}
+        sizes="(min-width: 1024px) 18vw, 32vw"
+        class="about__photo about__photo--sub"
+      />
+      <Image
+        src={img('nosotros-consulta')}
+        alt="Odontóloga de la Clínica Dental Dentinos sonriendo durante una consulta"
+        widths={[240, 384, 520, 720]}
+        sizes="(min-width: 1024px) 30vw, 55vw"
+        class="about__photo about__photo--main"
+      />
+    </div>
+
+    <div class="about__body">
+      <p class="about__text">
+        Hacemos implantología, ortodoncia invisible, odontopediatría, urgencias
+        y diseño de sonrisa. Primera valoración con escáner 3D sin coste.
+      </p>
+      <p class="about__text">
+        Cada tratamiento empieza por escucharte: estudiamos tu caso con
+        diagnóstico digital y te explicamos las opciones sin tecnicismos, para
+        que decidas con total tranquilidad.
+      </p>
+      <p class="about__text">
+        Un equipo cercano y una clínica pensada para que te sientas cómodo desde
+        que entras. Cuidamos cada detalle para que tu experiencia sea sencilla,
+        transparente y sin sorpresas.
+      </p>
+      <CtaButtons size="lg" class="about__cta" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    background-color: var(--color-white);
+    /* Incluye la separación con el hero (~150px en Figma); crece en grandes. */
+    padding-top: clamp(3.5rem, 1.5rem + 8vw, 9.375rem);
+    padding-bottom: clamp(2.5rem, 1.8rem + 3vw, 3.75rem);
+  }
+
+  .about__inner {
+    display: grid;
+    gap: clamp(2rem, 1.2rem + 3vw, 3.625rem);
+    /* Inset de contenido: 20px (móvil) → 81px (Figma); sigue creciendo. */
+    padding-inline: clamp(1.25rem, -0.094rem + 5.73vw, 7.5rem);
+  }
+
+  /* --- Encabezado (píldora + subtítulo en itálica) ---------------------- */
+  .about__head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1rem);
+  }
+
+  .about__title {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--text-h3);
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  /* --- Collage de imágenes (dos fotos, base alineada) ------------------- */
+  .about__media {
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1.125rem); /* → 18px */
+  }
+
+  .about__photo {
+    min-width: 0;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+  }
+
+  .about__photo--main {
+    flex: 358 1 0;
+    aspect-ratio: 358 / 521;
+  }
+
+  .about__photo--sub {
+    flex: 205 1 0;
+    aspect-ratio: 205 / 261;
+  }
+
+  /* --- Cuerpo de texto + CTA ------------------------------------------- */
+  .about__body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 1rem + 2vw, 2rem);
+  }
+
+  .about__text {
+    font-size: var(--text-lead); /* 18px @1440 (Figma), escala en pantallas grandes */
+    line-height: var(--leading-lead);
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- Escritorio (lg ≥ 1024px): encabezado arriba, foto | texto ------ */
+  @media (min-width: 1024px) {
+    .about__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        'head head'
+        'media body';
+      align-items: center;
+      column-gap: clamp(2.5rem, 0.5rem + 5vw, 4.3125rem); /* → 69px */
+    }
+
+    .about__head {
+      grid-area: head;
+    }
+    .about__media {
+      grid-area: media;
+    }
+    .about__body {
+      grid-area: body;
+    }
+  }
+</style>

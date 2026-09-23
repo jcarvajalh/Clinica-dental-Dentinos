@@ -106,9 +106,36 @@
   /* --- Layout global -------------------------------------------------------- */
   /* Altura del header: 64px (móvil) → 82px (Figma 1440). Sirve para offsets. */
   --header-height: clamp(4rem, 3.604rem + 1.69vw, 5.125rem);
+  /* Margen lateral de piezas full-bleed (header, hero): 20 → 30px (Figma). */
+  --gutter: clamp(1.25rem, 1.03rem + 0.939vw, 1.875rem);
 
   /* --- Radios --------------------------------------------------------------- */
-  --radius-btn: 1.25rem; /* 20px — botón "Agendar Cita" */
+  --radius-btn: 1.25rem; /* 20px — botones y píldoras */
+  --radius-btn-sm: 0.9375rem; /* 15px — botones compactos (.btn-xs) */
+  --radius-media: clamp(1.5rem, 0.93rem + 2.44vw, 3.125rem); /* 24 → 50px (fotos) */
+
+  /* --- Tipografía fluida (§6) — 375 → 1440 --------------------------------- */
+  /* Siguen creciendo por encima de 1440 (pantallas de 22"/24"+), no se congelan. */
+  --text-display: clamp(2.5rem, 1.796rem + 3.005vw, 6rem); /* 40 → 72px @1440 → 96px */
+  --leading-display: 1.06; /* 76/72 */
+  --tracking-display: -0.04em;
+  --text-lead: clamp(1rem, 0.375rem + 0.833vw, 1.5rem); /* 16 → 18px @1440 → 24px */
+  --leading-lead: 1.35;
+  --text-h3: clamp(1.25rem, 1.162rem + 0.376vw, 1.875rem); /* 20 → 24px @1440 → 30px */
+  --text-eyebrow: clamp(0.625rem, 0.2875rem + 0.375vw, 0.8125rem); /* 10px @1440 (mín 10) → 13px */
+  --text-rating: 0.625rem; /* 10px — pie de reseñas */
+
+  /* --- Superficies "glass" (blanco/negro con alfa sobre la paleta, §4.1) --- */
+  --color-surface-glass: rgb(255 255 255 / 0.8);
+  --color-border-glass: rgb(0 0 0 / 0.2);
+
+  /* Color funcional FUERA de paleta (aprobado): estrellas de reseñas Google. */
+  --color-rating-star: #FFCC00;
+
+  /* --- Sombras ------------------------------------------------------------- */
+  --shadow-badge: 0 1px 4px rgb(0 0 0 / 0.15); /* píldora de ubicación */
+  --shadow-glass: 0 2px 2px rgb(0 0 0 / 0.15); /* botón secundario / teleconsulta */
+  --shadow-btn: 0 2px 2px rgb(0 0 0 / 0.25); /* botón primario elevado */
 
   /* --- Movimiento (§9) ------------------------------------------------------ */
   --duration-base: 200ms;
@@ -230,6 +257,52 @@
 
   .btn-primary:active {
     background-color: var(--color-blue-darker);
+  }
+
+  /* Botón secundario "glass" sobre fondos claros (p. ej. Teleconsulta). */
+  .btn-secondary {
+    background-color: var(--color-surface-glass);
+    color: var(--color-blue-dark-active);
+    border: 0.5px solid var(--color-border-glass);
+    box-shadow: var(--shadow-glass);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--color-white);
+  }
+
+  /* Etiqueta/eyebrow de sección (píldora "Sobre nosotros", etc.).
+     Padding en em para que 6px/15px escalen con la fuente (10px @1440). */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.6em 1.5em;
+    font-size: var(--text-eyebrow);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--color-black);
+    border: 0.5px solid var(--color-border-glass);
+    border-radius: var(--radius-btn);
+  }
+
+  /* Tamaño compacto (~32px de alto): botones del hero y píldoras de acción. */
+  .btn-sm {
+    padding-block: 0.375rem;
+  }
+
+  /* Tamaño mínimo (~24px @1440): CTA secundarios dentro de bloques de texto. */
+  .btn-xs {
+    padding: 0.3125rem 1rem; /* 5px 16px */
+    font-size: 0.75rem; /* 12px */
+    border-radius: var(--radius-btn-sm);
+  }
+
+  /* Área táctil ≥ 44px en móvil sin alterar el tamaño de escritorio (§11). */
+  @media (max-width: 47.9375rem) {
+    .btn-sm,
+    .btn-xs {
+      min-height: 2.75rem;
+    }
   }
 }
 

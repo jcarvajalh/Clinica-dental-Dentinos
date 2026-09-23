@@ -256,11 +256,19 @@ Uso: `bg-blue-light`, `text-blue-darker`, `hover:bg-blue-dark-hover`, `font-seri
 
 El Figma a 1440 px es la **referencia exacta de desktop**. Desde ahí, Claude adapta cada sección hacia arriba y hacia abajo mientras la construye, no al final.
 
+### Patrón de escalado por defecto (aplicar SIEMPRE, salvo excepción explícita)
+
+Toda sección se construye **full-bleed y escalando de forma proporcional**, de modo que en portátiles y en pantallas grandes de 22"/24"+ se vea fiel al diseño de Figma (1440):
+
+* **Full-bleed**: la sección ocupa el 100 % del ancho, sin cap a 1440. Los márgenes laterales se resuelven con el token `--gutter` (30 px en Figma), no con `max-width`.
+* **Escala proporcional que NO se congela en 1440**: tipografía, espaciados y medidas usan `clamp()` cuyo máximo se sitúa por encima de 1440 (p. ej. el valor a ~1920–2240), para que sigan creciendo en pantallas grandes. El hero (`_home/01-Hero.astro`) es la referencia canónica.
+* La **excepción** (una sección centrada con `max-width`, o con tipografía congelada en 1440) solo se aplica si Juanca lo indica expresamente para esa sección.
+
 ### Dispositivos objetivo
 
 |Rango|Dispositivo|Qué cuidar|
 |-|-|-|
-|≥ 1920 px (`3xl`)|Monitores 22"|Contenido centrado con `max-width`; fondos e imágenes de fondo a sangre completa; nada estirado ni pixelado|
+|≥ 1920 px (`3xl`)|Monitores 22"/24"|Full-bleed a sangre completa; tipografía y medidas **siguen creciendo** (no se congelan) para verse fiel a Figma; nada estirado ni pixelado|
 |1440 px|Diseño Figma|Fidelidad al píxel|
 |1280–1536 px (`xl`/`2xl`)|Portátiles y monitores \~19" (a menudo con escalado de Windows al 125 %, ≈1536×864)|**Poca altura**: heros con `100svh` deben caber en \~700–860 px de alto|
 |1024–1279 px (`lg`)|Portátiles pequeños, tablet horizontal|Rejillas de 3–4 columnas pasan a 2–3|
@@ -271,7 +279,7 @@ El Figma a 1440 px es la **referencia exacta de desktop**. Desde ahí, Claude ad
 
 1. **Fluido primero, breakpoints después.** Tipografía, espaciados verticales y gaps se escalan con `clamp()` entre 375 px y 1440 px. Los breakpoints se reservan para cambios de **estructura** (columnas, orden, mostrar/ocultar).
 2. **Tailwind es mobile‑first**: la clase base es móvil y se sube con `md:`, `lg:`, `xl:`. Al traducir Figma, los valores de 1440 suelen quedar en `xl:`/`2xl:` o dentro del `clamp()`.
-3. Por encima de 1440 los tamaños fluidos se congelan en el valor de Figma; el contenedor limita el ancho. Ajustes específicos para 1920 solo con `3xl:` si una sección lo pide.
+3. Por encima de 1440 los tamaños fluidos **siguen creciendo de forma proporcional** (no se congelan): el máximo del `clamp()` se sitúa por encima de 1440 (valor a ~1920–2240). El diseño es full-bleed (sin cap a 1440); el ancho lo ordenan el token `--gutter` y las medidas relativas, no un contenedor centrado. Ver "Patrón de escalado por defecto" arriba.
 4. Contenedor único reutilizable:
 
 ```css
@@ -293,8 +301,10 @@ intercepto = min − pendiente × 375
 clamp(min\_rem, intercepto\_rem + (pendiente × 100)vw, max\_rem)
 ```
 
-Ejemplo: titular de 72 px en Figma, 40 px en móvil →
-`clamp(2.5rem, 1.796rem + 3.005vw, 4.5rem)`
+Ejemplo: titular de 72 px en Figma, 40 px en móvil. La pendiente/intercepto se
+calculan con el ancla de 1440, pero el **máximo se eleva** por encima del valor de
+Figma para que siga creciendo en pantallas grandes (aquí ~96 px):
+`clamp(2.5rem, 1.796rem + 3.005vw, 6rem)`
 
 Estos valores se guardan como tokens en `@theme` (`--text-display`, `--text-h1`, `--text-h2`…, `--spacing-section`…) a medida que aparecen en el Figma. No se calculan ad hoc en cada componente.
 
@@ -443,6 +453,18 @@ Servir con `Content-Type: text/plain; charset=utf-8`.
 |—|Paleta: HEX como fuente de verdad; ratios de contraste recalculados (los `rgb()` del Figma no coinciden).|
 |—|Secciones en `\_sections/` (y `\_home/`) para que Astro no las publique como rutas.|
 |—|Cormorant Garamond por `<link>` en el head; Creato Display self-hosted en woff2.|
+|2026-09-23|Imágenes de `src/assets/` referenciadas por slug vía `@/lib/images.ts` (`img('slug')`), sin `import` por archivo. Nombres de archivo únicos.|
+|2026-09-23|Hero: tokens fluidos `--text-display`, `--text-lead`, `--text-rating`, `--radius-media`; superficies "glass" (`--color-surface-glass`, `--color-border-glass`) y sombras (`--shadow-badge/glass/btn`).|
+|2026-09-23|Botones: variantes reutilizables `.btn-secondary` (glass) y `.btn-sm` (compacto ~32px) en `@layer components`.|
+|2026-09-23|`--color-rating-star: #FFCC00` — único color fuera de la paleta Blue, aprobado, exclusivo para las estrellas de reseñas de Google.|
+|2026-09-23|Header y hero **full-bleed** (sin cap a 1440): margen lateral 30px (`--gutter`), foto a 50% con 10px de aire dcha/arriba/abajo. Debe verse igual en portátil y en pantallas de 22"/24".|
+|2026-09-23|Header `position: fixed` + fondo transparente sobre el hero; blanco con sombra al hacer scroll (`.is-scrolled`). La foto del hero sube hasta arriba tras el header.|
+|2026-09-23|**Estándar del proyecto (§6):** todas las secciones son full-bleed y escalan de forma proporcional sin congelarse en 1440 (siguen creciendo en 22"/24"+). El hero es la referencia. Excepción solo si Juanca lo indica por sección.|
+|2026-09-23|Hero: `<h1>` = "Clínica Dental Dentinos en Teatinos, Málaga" (la píldora); el titular grande "Implantes…" es `<p>`. Titular y entradilla comparten ancho (`--hero-measure`).|
+|2026-09-23|CTA "Agendar Cita" + "Teleconsulta" extraídos a componente reutilizable `components/ui/CtaButtons.astro` (prop `size`: `lg` hero / `sm` compacto). Usado en hero y en Sobre nosotros.|
+|2026-09-23|Botones: `.btn-xs` (12px, radio 15px) para CTA dentro de bloques de texto; `.btn-sm`/`.btn-xs` con `min-height: 44px` en móvil (área táctil, §11).|
+|2026-09-23|Eyebrow/etiqueta de sección: clase reutilizable `.eyebrow` (10px @1440 vía `--text-eyebrow`, padding `0.6em 1.5em` = 6px/15px que escala con la fuente). Usar en todas las secciones que lleven ese titulito.|
+|2026-09-23|Sección "Sobre nosotros" (`_home/02-SobreNosotros.astro`): `<h2>` = "Clínica moderna y acogedora" (itálica), píldora "Sobre nosotros" como eyebrow. El cuerpo largo repetido de Figma era relleno → 1 párrafo real + marcador `[TEXTO PENDIENTE]`. CTA al mismo tamaño que el hero (`CtaButtons size="lg"`).|
 
 
 

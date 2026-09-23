@@ -1,0 +1,38 @@
+---
+import { appointmentHref, teleconsultaHref } from '@/data/site';
+
+interface Props {
+  /** 'lg' = hero (16px, elevado); 'sm' = compacto dentro de texto (12px). */
+  size?: 'lg' | 'sm';
+  class?: string;
+}
+
+const { size = 'lg', class: className } = Astro.props;
+const btnSize = size === 'sm' ? 'btn-xs' : 'btn-sm';
+---
+
+<div class:list={['cta-pair', `cta-pair--${size}`, className]}>
+  <a href={appointmentHref} class:list={['btn', 'btn-primary', btnSize]}>
+    Agendar Cita
+  </a>
+  <a href={teleconsultaHref} class:list={['btn', 'btn-secondary', btnSize]}>
+    Teleconsulta
+  </a>
+</div>
+
+<style>
+  .cta-pair {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .cta-pair--sm {
+    gap: 0.5rem;
+  }
+
+  /* El botón primario del hero va elevado; el compacto no (según Figma). */
+  .cta-pair--lg .btn-primary {
+    box-shadow: var(--shadow-btn);
+  }
+</style>

@@ -28,6 +28,14 @@ export const site = {
 
   // --- Redes sociales ([PENDIENTE]) ---
   social: {} as Record<string, string>,
+
+  // --- Reseñas (se muestran en el hero) ---
+  reviews: {
+    rating: '4.9',
+    count: '+250',
+    // TODO: enlace al perfil de reseñas de Google
+    url: '',
+  },
 } as const;
 
 /**
@@ -35,6 +43,12 @@ export const site = {
  * TODO: confirmar destino (página de contacto, agenda online o WhatsApp).
  */
 export const appointmentHref = '/contacto';
+
+/**
+ * CTA "Teleconsulta" del hero.
+ * TODO: confirmar destino (formulario, videollamada o WhatsApp).
+ */
+export const teleconsultaHref = '#';
 
 export type ContactLinkType = 'location' | 'email' | 'whatsapp';
 

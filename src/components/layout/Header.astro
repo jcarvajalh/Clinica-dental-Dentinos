@@ -1,19 +1,8 @@
 ---
 import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
-import logo from '@/assets/images/dentinos-logo.png';
-import locationIcon from '@/assets/icons/location.png';
-import emailIcon from '@/assets/icons/email.png';
-import whatsappIcon from '@/assets/icons/whatsapp.png';
+import { img } from '@/lib/images';
 import { mainNav } from '@/data/navigation';
 import { contactLinks, appointmentHref, site } from '@/data/site';
-import type { ContactLinkType } from '@/data/site';
-
-const contactIcons: Record<ContactLinkType, ImageMetadata> = {
-  location: locationIcon,
-  email: emailIcon,
-  whatsapp: whatsappIcon,
-};
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
@@ -24,7 +13,7 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
     <!-- Logo -->
     <a href="/" class="logo" aria-label={`${site.legalName} — inicio`}>
       <Image
-        src={logo}
+        src={img('dentinos-logo')}
         alt={site.legalName}
         widths={[144, 288]}
         sizes="144px"
@@ -57,7 +46,7 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
             <li>
               <a href={c.href} class="contact-icon" aria-label={c.label}>
                 <Image
-                  src={contactIcons[c.type]}
+                  src={img(c.type)}
                   alt=""
                   width={20}
                   height={20}
@@ -120,7 +109,7 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
                 aria-label={c.label}
                 data-menu-link
               >
-                <Image src={contactIcons[c.type]} alt="" width={28} height={28} />
+                <Image src={img(c.type)} alt="" width={28} height={28} />
               </a>
             </li>
           ))
@@ -136,15 +125,19 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
 
 <style>
   .site-header {
-    position: sticky;
+    position: fixed;
+    inset-inline: 0;
     top: 0;
     z-index: 50;
-    background-color: var(--color-white);
-    transition: box-shadow var(--duration-base) var(--ease-out-soft);
+    /* Transparente sobre el hero; se vuelve blanco al hacer scroll. */
+    background-color: transparent;
+    transition: background-color var(--duration-base) var(--ease-out-soft),
+      box-shadow var(--duration-base) var(--ease-out-soft);
   }
 
-  /* Sombra sutil solo al hacer scroll (la clase la añade el script). */
+  /* Fondo blanco + sombra sutil al hacer scroll (la clase la añade el script). */
   .site-header.is-scrolled {
+    background-color: var(--color-white);
     box-shadow: 0 1px 0 0 var(--color-blue-light-active),
       0 6px 20px -12px rgb(16 57 111 / 0.35);
   }
@@ -155,12 +148,10 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
     justify-content: space-between;
     gap: 1rem;
     width: 100%;
-    max-width: 90rem; /* 1440 */
     min-height: var(--header-height);
-    margin-inline: auto;
-    /* 20px (móvil) → 31px (Figma 1440). Padding propio del header (más ajustado
-       que .container-site, cuyo máximo de 120px no aplica al chrome). */
-    padding-inline: clamp(1.25rem, 1.008rem + 1.033vw, 1.9375rem);
+    /* Full-bleed con 30px de margen lateral: mismo aspecto en portátil y en
+       pantallas grandes de 22"/24" (sin cap a 1440). */
+    padding-inline: var(--gutter);
   }
 
   .logo {

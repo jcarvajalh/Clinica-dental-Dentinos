@@ -1,13 +1,14 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from './_home/01-Hero.astro';
+import SobreNosotros from './_home/02-SobreNosotros.astro';
 ---
 
 <BaseLayout
   title="Clínica dental Dentinos"
   description="Clínica dental Dentinos."
 >
-  {/* Contenido de la home pendiente — secciones en src/pages/_home/ */}
-  <section class="container-site" style="padding-block: 4rem;">
-    <p>[CONTENIDO PENDIENTE]</p>
-  </section>
+  <Hero />
+  <SobreNosotros />
+  {/* Siguientes secciones de la home en src/pages/_home/ */}
 </BaseLayout>

@@ -1,0 +1,223 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import { site } from '@/data/site';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+
+const { reviews } = site;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__inner">
+    <div class="hero__content">
+      <h1 id="hero-title" class="hero__badge">
+        Clínica Dental Dentinos en Teatinos, Málaga
+      </h1>
+
+      <p class="hero__title">
+        Implantes, ortodoncia invisible y estética
+        <em class="hero__title-accent">Dental.</em>
+      </p>
+
+      <p class="hero__lead">
+        Implantología, ortodoncia invisible, odontopediatría, estética dental y
+        urgencias en Teatinos. Con la Dra. Ana Fernández-Cavada y un equipo que
+        pone tu salud primero. <strong>Tu primera visita es gratuita.</strong>
+      </p>
+
+      <CtaButtons size="lg" />
+
+      <div
+        class="hero__rating"
+        aria-label={`Valoración ${reviews.rating} sobre 5 en Google, ${reviews.count} reseñas`}
+      >
+        <Image
+          src={img('logo-google')}
+          alt=""
+          width={34}
+          height={34}
+          class="hero__rating-logo"
+        />
+        <div class="hero__rating-body">
+          <span class="hero__stars" aria-hidden="true">
+            {
+              Array.from({ length: 5 }).map(() => (
+                <svg viewBox="0 0 24 24" class="hero__star">
+                  <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                </svg>
+              ))
+            }
+          </span>
+          <span class="hero__rating-text" aria-hidden="true">
+            {reviews.rating} ({reviews.count} reseñas)
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__media">
+      <Image
+        src={img('hero-clinica-dentinos')}
+        alt="La Dra. Ana Fernández-Cavada atendiendo a una paciente en la Clínica Dental Dentinos"
+        widths={[420, 640, 710, 1420]}
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="hero__image"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    /* Ancho compartido por el titular y la entradilla: siempre iguales.
+       Escala con la pantalla (más grande en 22"/24"+). */
+    --hero-measure: clamp(20rem, 14rem + 23.3vw, 46rem);
+    background-color: var(--color-white);
+    /* Deja sitio al header fijo (transparente) en móvil/tablet. */
+    padding-top: calc(var(--header-height) + clamp(1rem, 0.5rem + 2vw, 2rem));
+    padding-bottom: clamp(1.5rem, 0.9rem + 2.6vw, 2.5rem);
+  }
+
+  .hero__inner {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 3rem);
+    width: 100%;
+    /* Full-bleed con 30px de margen lateral (sin cap a 1440). */
+    padding-inline: var(--gutter);
+  }
+
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Espaciados verticales fieles a Figma, escalados hacia móvil. */
+    gap: clamp(1.25rem, 0.9rem + 1.5vw, 1.75rem);
+  }
+
+  /* --- Píldora de ubicación --------------------------------------------- */
+  .hero__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1.3125rem; /* 8px 21px */
+    font-size: 1rem;
+    font-weight: 400; /* es el <h1>: neutraliza el bold por defecto */
+    line-height: 1.1875;
+    color: var(--color-blue-darker);
+    background-color: var(--color-surface-glass);
+    border: 0.5px solid var(--color-border-glass);
+    border-radius: var(--radius-btn);
+    box-shadow: var(--shadow-badge);
+  }
+
+  /* --- Titular ---------------------------------------------------------- */
+  .hero__title {
+    max-width: var(--hero-measure);
+    font-weight: 400;
+    font-size: var(--text-display);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-blue-dark-active);
+  }
+
+  .hero__title-accent {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* --- Entradilla ------------------------------------------------------- */
+  .hero__lead {
+    max-width: var(--hero-measure);
+    font-size: var(--text-lead);
+    line-height: var(--leading-lead);
+    color: var(--color-blue-dark-hover);
+  }
+
+  .hero__lead strong {
+    font-weight: 700;
+  }
+
+  /* --- Valoración Google ----------------------------------------------- */
+  .hero__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .hero__rating-logo {
+    width: 2.125rem; /* 34px */
+    height: 2.125rem;
+    flex-shrink: 0;
+  }
+
+  .hero__rating-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .hero__stars {
+    display: inline-flex;
+  }
+
+  .hero__star {
+    width: 1.25rem; /* 20px */
+    height: 1.25rem;
+    fill: var(--color-rating-star);
+  }
+
+  .hero__rating-text {
+    font-size: var(--text-rating);
+    line-height: 1.2;
+    color: var(--color-black);
+  }
+
+  /* --- Media ------------------------------------------------------------ */
+  .hero__media {
+    width: 100%;
+  }
+
+  .hero__image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 710 / 809;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+  }
+
+  /* --- Escritorio (lg ≥ 1024px): dos columnas full-bleed -------------- */
+  @media (min-width: 1024px) {
+    .hero {
+      /* La foto sube hasta arriba (bajo el header transparente). */
+      padding: 0;
+    }
+
+    .hero__inner {
+      /* 50/50: la foto ocupa la mitad → 710px con margen de 10px @1440.
+         Al ser proporcional, se ve igual en portátil y en 22"/24". */
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 0;
+      padding-inline: 0;
+    }
+
+    /* Texto a 30px del borde (alineado con el header), despejado del header. */
+    .hero__content {
+      padding-left: var(--gutter);
+      padding-block: var(--header-height) 0;
+    }
+
+    /* Foto pegada al borde derecho con 10px de aire arriba/dcha/abajo. */
+    .hero__media {
+      padding: 0.625rem 0.625rem 0.625rem 0;
+    }
+
+    /* Se limita en pantallas de poca altura y recorta con object-fit (§6). */
+    .hero__image {
+      max-height: calc(100svh - 1.25rem);
+    }
+  }
+</style>

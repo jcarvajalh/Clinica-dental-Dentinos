@@ -1,0 +1,171 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+
+/*
+ * Proceso de primera visita (§7: contenido exclusivo de esta sección).
+ * Textos tomados literalmente del Figma (son contenido real, no relleno).
+ */
+interface Step {
+  number: string;
+  image: string;
+  title: string;
+  body: string;
+}
+
+const steps: Step[] = [
+  {
+    number: '01',
+    image: 'primera-visita-paso-1',
+    title: 'Te escuchamos',
+    body: 'Cuéntanos tu caso, tus molestias y tus objetivos. Aquí lo importante empieza por ti.',
+  },
+  {
+    number: '02',
+    image: 'primera-visita-paso-2',
+    title: 'Diagnóstico y pruebas necesarias',
+    body: 'Realizamos las pruebas que tu caso requiera (radiografías/escáner, etc.) para decidir con criterio.',
+  },
+  {
+    number: '03',
+    image: 'primera-visita-paso-3',
+    title: 'Plan de tratamiento claro',
+    body: 'Te explicamos el diagnóstico y el plan recomendado con tiempos orientativos, alternativas y presupuesto.',
+  },
+];
+---
+
+<section class="visit" aria-labelledby="visit-title">
+  <header class="visit__head">
+    <p class="eyebrow">Cómo trabajamos</p>
+    <h2 id="visit-title" class="section-title">
+      Tu tratamiento comienza con entender lo que necesitas.
+    </h2>
+  </header>
+
+  <ol class="visit__grid" role="list">
+    {
+      steps.map((s) => (
+        <li class="step">
+          <Image
+            src={img(s.image)}
+            alt=""
+            widths={[272, 340, 408, 544]}
+            sizes="(min-width: 900px) 22vw, (min-width: 600px) 20rem, 90vw"
+            class="step__img"
+          />
+          <span class="step__overlay" aria-hidden="true" />
+          <div class="step__content">
+            <h3 class="step__title">{s.title}</h3>
+            <p class="step__body">{s.body}</p>
+            <span class="step__num" aria-hidden="true">{s.number}</span>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .visit {
+    background-color: var(--color-blue-light-hover);
+    padding-block: clamp(2.5rem, 1.8rem + 2.8vw, 3.75rem);
+  }
+
+  /* --- Cabecera: eyebrow (píldora blanca) + título ---------------------- */
+  .visit__head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-head);
+    padding-inline: var(--inset-section);
+    margin-bottom: clamp(2rem, 1.2rem + 3vw, 2.8125rem); /* 45px @1440 */
+  }
+
+  /* En esta sección el fondo es azul claro: la píldora va en blanco (Figma). */
+  .eyebrow {
+    background-color: var(--color-white);
+  }
+
+  /* --- Rejilla de pasos: centrada, 3 columnas en escritorio ------------- */
+  .visit__grid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1rem, 0.75rem + 1vw, 1.5rem); /* 24px @1440 */
+    width: 100%;
+    max-width: 22rem; /* móvil: una columna acotada */
+    margin-inline: auto;
+  }
+
+  /* --- Tarjeta de paso -------------------------------------------------- */
+  .step {
+    --step-pad: clamp(1rem, 0.7rem + 0.9vw, 1.6875rem); /* 27px @1440 */
+    position: relative;
+    aspect-ratio: 272 / 419;
+    overflow: hidden;
+    border-radius: var(--radius-media); /* 50px @1440 */
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .step__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgb(0 0 0 / 0.5);
+  }
+
+  /* Contenido anclado abajo; mismo gap entre título, cuerpo y número. */
+  .step__content {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding-inline: var(--step-pad);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 0.8rem + 0.7vw, 1.6875rem); /* ~27px @1440 */
+  }
+
+  /* Número gigante translúcido: la caja abraza el glifo (line-height ajustado)
+     para que el espacio superior iguale al de los demás, y se recorta abajo. */
+  .step__num {
+    font-weight: 500;
+    font-size: clamp(4rem, 1.4rem + 6.9vw, 9rem); /* 128px @1440, sigue creciendo */
+    line-height: 0.72;
+    margin-bottom: -0.22em; /* desciende y se recorta contra el borde inferior */
+    color: rgb(172 223 240 / 0.65); /* blue-light-active al 65% */
+  }
+
+  .step__title {
+    font-weight: 800;
+    font-size: clamp(1rem, 0.9rem + 0.6vw, 1.25rem); /* 16 → 18px @1440 */
+    line-height: 1.17;
+    color: var(--color-blue-light-active); /* #ACDFF0 */
+  }
+
+  .step__body {
+    font-weight: 500;
+    font-size: clamp(0.9375rem, 0.85rem + 0.3vw, 1.0625rem); /* 15 → 17px */
+    line-height: 1.19;
+    color: var(--color-blue-light-active);
+  }
+
+  /* --- Escritorio: 3 columnas centradas, escala proporcional (§6) ------- */
+  @media (min-width: 56.25rem) {
+    .visit__grid {
+      grid-template-columns: repeat(3, 1fr);
+      /* 864px @1440 (60vw); sigue creciendo en pantallas grandes, cap 1152. */
+      max-width: clamp(54rem, 60vw, 72rem);
+    }
+  }
+</style>

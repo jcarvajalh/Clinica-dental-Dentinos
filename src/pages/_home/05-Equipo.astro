@@ -1,0 +1,197 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+
+/*
+ * Contenido exclusivo de esta sección (§7): el equipo médico solo aparece
+ * aquí por ahora. Si se reutiliza en /nosotros, se extrae a src/data/.
+ * Orden y textos tomados del Figma (fila de 3 + fila de 2 centrada).
+ */
+interface Member {
+  slug: string;
+  name: string;
+  specialty: string;
+  license: string;
+  description: string;
+}
+
+const members: Member[] = [
+  {
+    slug: 'team-fernandez-cavada',
+    name: 'Dra. Fernández-Cavada',
+    specialty: 'Ortodoncista',
+    license: 'DN20485',
+    description: 'Especialista en ortodoncia y ortopedia dentomaxilar.',
+  },
+  {
+    slug: 'team-ramos',
+    name: 'Dr. Ramos',
+    specialty: 'Implantología',
+    license: 'DN18563',
+    description: 'Cirujano local y especialista en implantología.',
+  },
+  {
+    slug: 'team-ternero',
+    name: 'Dr. Ternero',
+    specialty: 'Prostodoncista',
+    license: 'DN22109',
+    description: 'Odontólogo general y especialista en prostodoncia.',
+  },
+  {
+    slug: 'team-molina',
+    name: 'Dr. Molina',
+    specialty: 'Endodoncista',
+    license: 'DN22909',
+    description: 'Especialista en endodoncia y odontología restauradora.',
+  },
+  {
+    slug: 'team-salamanca',
+    name: 'Dra. Salamanca',
+    specialty: 'Odontóloga',
+    license: 'DN56845',
+    description: 'Odontóloga general y especialista en cirugía.',
+  },
+];
+---
+
+<section class="team" aria-labelledby="team-title">
+  <div class="team__inner">
+    <header class="team__head">
+      <p class="eyebrow">Equipo médico</p>
+      <h2 id="team-title" class="section-title">Conoce a nuestro equipo médico</h2>
+    </header>
+
+    <ul class="team__grid" role="list">
+      {
+        members.map((m) => (
+          <li class="member">
+            <div class="member__photo">
+              <Image
+                src={img(m.slug)}
+                alt={`${m.name}, ${m.specialty.toLowerCase()} de la Clínica Dental Dentinos`}
+                widths={[280, 300, 400, 600]}
+                sizes="(min-width: 1024px) 23vw, (min-width: 640px) 44vw, 90vw"
+                class="member__img"
+              />
+              <div class="member__badge">
+                <h3 class="member__name">{m.name}</h3>
+                <p class="member__role">{m.specialty} - Licencia: {m.license}</p>
+              </div>
+            </div>
+            <p class="member__desc">{m.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .team {
+    background-color: var(--color-white);
+    padding-block: clamp(3rem, 1.5rem + 6vw, 6.25rem);
+  }
+
+  .team__inner {
+    padding-inline: var(--inset-section);
+  }
+
+  .team__head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1rem);
+    margin-bottom: clamp(2.25rem, 1.25rem + 3vw, 4rem);
+  }
+
+  /* --- Rejilla: 3 por fila; la última fila (2) queda centrada ---------- */
+  .team__grid {
+    --col-gap: clamp(1.5rem, 1rem + 5.2vw, 5.6875rem); /* → 91px @1440 */
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(2.75rem, 2rem + 2.5vw, 4.5rem) var(--col-gap);
+    /* 1073px @1440; sigue creciendo en pantallas grandes (§6), cap 1520. */
+    width: 100%;
+    max-width: clamp(67rem, 74.5vw, 95rem);
+    margin-inline: auto;
+  }
+
+  .member {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 22rem;
+    margin-inline: auto;
+  }
+
+  /* --- Foto cuadrada con la píldora del nombre superpuesta ------------- */
+  .member__photo {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-media); /* 24 → 50px */
+    overflow: hidden;
+  }
+
+  .member__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .member__badge {
+    position: absolute;
+    inset-inline: 6.06%; /* 18/297 */
+    bottom: 6.06%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: clamp(0.4375rem, 0.35rem + 0.25vw, 0.625rem)
+      clamp(1rem, 0.7rem + 1.2vw, 1.6875rem); /* 7px / 27px @1440 */
+    background-color: var(--color-white);
+    border-radius: var(--radius-media);
+  }
+
+  .member__name {
+    font-size: clamp(1rem, 0.375rem + 0.833vw, 1.375rem); /* → 18px @1440 */
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .member__role {
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(0.8125rem, 0.3125rem + 0.625vw, 1.0625rem); /* → 14px @1440 */
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .member__desc {
+    margin-top: clamp(0.75rem, 0.5rem + 0.6vw, 1rem); /* ~16px @1440 */
+    font-size: var(--text-card-title); /* 20px @1440 */
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  /* --- 2 columnas (tablet) → 3 columnas (escritorio) ------------------- */
+  @media (min-width: 640px) {
+    .member {
+      width: calc((100% - var(--col-gap)) / 2);
+      max-width: none;
+      margin-inline: 0;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .member {
+      width: calc((100% - 2 * var(--col-gap)) / 3);
+    }
+  }
+</style>

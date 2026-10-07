@@ -1,0 +1,387 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import { site } from '@/data/site';
+
+const { reviews: ratingData } = site;
+
+/*
+ * Reseñas de pacientes (§7: contenido exclusivo de esta sección por ahora).
+ * [TEXTO PENDIENTE]: faltan las reseñas reales de Google. Los textos van
+ * marcados «[Reseña pendiente]» hasta tener las valoraciones definitivas.
+ * Las fotos de avatar sí son las reales (src/assets/images/home/review-*).
+ */
+interface Review {
+  name: string;
+  avatar: string;
+  text: string;
+}
+
+const reviews: Review[] = [
+  {
+    name: 'Alessandra Gómez',
+    avatar: 'review-alessandra-gomez',
+    text: '[Reseña pendiente] Trato cercano y profesional; me explicaron cada paso del tratamiento y el resultado fue excelente.',
+  },
+  {
+    name: 'Roxana Lizarazu',
+    avatar: 'review-roxana-lizarazu',
+    text: '[Reseña pendiente] Instalaciones modernas y un equipo que te hace sentir en confianza desde la primera visita.',
+  },
+  {
+    name: 'Jhon Dennis',
+    avatar: 'review-jhon-dennis',
+    text: '[Reseña pendiente] Puntuales, atentos y con una atención impecable. Totalmente recomendados.',
+  },
+];
+
+// Dos filas con contenido distinto; corren en direcciones opuestas.
+const rowTop: Review[] = [reviews[0], reviews[1], reviews[2], reviews[0]];
+const rowBottom: Review[] = [reviews[1], reviews[2], reviews[0], reviews[1]];
+
+/** Cada fila se renderiza dos veces para el bucle infinito sin costuras. */
+const copies = [false, true] as const;
+---
+
+<section class="reviews" aria-labelledby="reviews-title">
+  <div class="reviews__head">
+    <div class="reviews__intro">
+      <p class="eyebrow">Testimonios</p>
+      <h2 id="reviews-title" class="section-title">
+        La experiencia de nuestros pacientes habla por nosotros.
+      </h2>
+    </div>
+
+    <div
+      class="reviews__rating"
+      aria-label={`Valoración ${ratingData.rating} sobre 5 en Google, ${ratingData.count} reseñas`}
+    >
+      <Image
+        src={img('logo-google')}
+        alt=""
+        width={34}
+        height={34}
+        class="reviews__rating-logo"
+      />
+      <div class="reviews__rating-body">
+        <span class="reviews__hstars" aria-hidden="true">
+          {
+            Array.from({ length: 5 }).map(() => (
+              <svg viewBox="0 0 24 24" class="reviews__hstar">
+                <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            ))
+          }
+        </span>
+        <span class="reviews__rating-text" aria-hidden="true">
+          {ratingData.rating} ({ratingData.count} reseñas)
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="reviews__rows">
+    {/* Fila superior: se desplaza hacia la derecha */}
+    <div class="marquee" data-marquee data-direction="right">
+      <div class="marquee__track">
+        {
+          copies.map((dup) =>
+            rowTop.map((r) => (
+              <figure
+                class="rev-card"
+                aria-hidden={dup ? 'true' : undefined}
+                aria-label={dup ? undefined : `Reseña de ${r.name}, 5 estrellas sobre 5`}
+              >
+                <blockquote class="rev-card__text">{r.text}</blockquote>
+                <figcaption class="rev-card__author">
+                  <Image
+                    src={img(r.avatar)}
+                    alt=""
+                    width={28}
+                    height={28}
+                    class="rev-card__avatar"
+                  />
+                  <span class="rev-card__meta">
+                    <span class="rev-card__name">{r.name}</span>
+                    <span class="rev-card__stars" aria-hidden="true">
+                      {Array.from({ length: 5 }).map(() => (
+                        <svg viewBox="0 0 24 24" class="rev-card__star">
+                          <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </span>
+                  </span>
+                </figcaption>
+              </figure>
+            )),
+          )
+        }
+      </div>
+    </div>
+
+    {/* Fila inferior: se desplaza hacia la izquierda */}
+    <div class="marquee" data-marquee data-direction="left">
+      <div class="marquee__track">
+        {
+          copies.map((dup) =>
+            rowBottom.map((r) => (
+              <figure
+                class="rev-card"
+                aria-hidden={dup ? 'true' : undefined}
+                aria-label={dup ? undefined : `Reseña de ${r.name}, 5 estrellas sobre 5`}
+              >
+                <blockquote class="rev-card__text">{r.text}</blockquote>
+                <figcaption class="rev-card__author">
+                  <Image
+                    src={img(r.avatar)}
+                    alt=""
+                    width={28}
+                    height={28}
+                    class="rev-card__avatar"
+                  />
+                  <span class="rev-card__meta">
+                    <span class="rev-card__name">{r.name}</span>
+                    <span class="rev-card__stars" aria-hidden="true">
+                      {Array.from({ length: 5 }).map(() => (
+                        <svg viewBox="0 0 24 24" class="rev-card__star">
+                          <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                      ))}
+                    </span>
+                  </span>
+                </figcaption>
+              </figure>
+            )),
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews {
+    background-color: var(--color-white);
+    padding-block: clamp(3rem, 1.5rem + 6vw, 6.25rem);
+    overflow: hidden; /* las filas full-bleed no provocan scroll horizontal */
+  }
+
+  /* --- Cabecera: eyebrow + título (izq.) y valoración Google (dcha.) ----- */
+  .reviews__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    /* Título y bloque de Google agrupados a la izquierda, 30px entre ambos. */
+    gap: var(--gap-head);
+    padding-inline: var(--inset-section);
+  }
+
+  .reviews__intro {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-head);
+  }
+
+  .reviews__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .reviews__rating-logo {
+    width: clamp(1.75rem, 1.55rem + 0.85vw, 2.125rem); /* 28 → 34px */
+    height: auto;
+    flex-shrink: 0;
+  }
+
+  .reviews__rating-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .reviews__hstars {
+    display: inline-flex;
+  }
+
+  .reviews__hstar {
+    width: clamp(1.25rem, 1.05rem + 0.85vw, 1.5rem); /* 20 → 24px */
+    height: clamp(1.25rem, 1.05rem + 0.85vw, 1.5rem);
+    fill: var(--color-rating-star);
+  }
+
+  .reviews__rating-text {
+    font-size: var(--text-rating);
+    line-height: 1.2;
+    color: var(--color-black);
+  }
+
+  /* --- Filas del carrusel (full-bleed) ---------------------------------- */
+  .reviews__rows {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.6rem + 0.6vw, 1.25rem); /* 20px @1440 */
+    margin-top: clamp(2rem, 1.2rem + 3.2vw, 3.75rem);
+  }
+
+  .marquee {
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y; /* permite el scroll vertical de la página al arrastrar */
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .marquee.is-grabbing {
+    cursor: grabbing;
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    gap: clamp(0.625rem, 0.5rem + 0.5vw, 1rem); /* 16px @1440 */
+    will-change: transform;
+  }
+
+  /* --- Tarjeta de reseña ------------------------------------------------- */
+  .rev-card {
+    --card-w: clamp(17.5rem, 13.2rem + 18.2vw, 31rem); /* 280 → 474px @1440 → ~496 */
+    flex: 0 0 auto;
+    width: var(--card-w);
+    min-height: clamp(8.5rem, 7.6rem + 2.9vw, 9.8125rem); /* 157px @1440 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(0.75rem, 0.6rem + 0.6vw, 1rem);
+    padding: clamp(0.875rem, 0.7rem + 0.7vw, 1.25rem); /* ~20px @1440 */
+    background-color: var(--color-blue-light-hover);
+    border-radius: var(--radius-btn); /* 20px */
+  }
+
+  .rev-card__text {
+    margin: 0;
+    font-size: clamp(0.9375rem, 0.88rem + 0.25vw, 1.0625rem); /* 15 → 17px */
+    line-height: 1.19;
+    color: var(--color-blue-dark-hover);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .rev-card__author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .rev-card__avatar {
+    flex: 0 0 auto;
+    width: 1.75rem; /* 28px */
+    height: 1.75rem;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .rev-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .rev-card__name {
+    font-size: clamp(0.8125rem, 0.78rem + 0.15vw, 0.875rem); /* 13 → 14px */
+    line-height: 1.2;
+    color: var(--color-black);
+  }
+
+  .rev-card__stars {
+    display: inline-flex;
+  }
+
+  .rev-card__star {
+    width: 1.25rem; /* 20px */
+    height: 1.25rem;
+    fill: var(--color-rating-star);
+  }
+</style>
+
+<script>
+  /*
+   * Carrusel infinito con control por arrastre (§9).
+   * - Fila superior avanza hacia la derecha; la inferior, hacia la izquierda.
+   * - Cada fila está duplicada en el DOM; el bucle envuelve por el ancho de un
+   *   juego, por lo que no se ve costura.
+   * - Al arrastrar (pointer), el usuario controla la dirección; al soltar,
+   *   el movimiento automático se reanuda de inmediato.
+   * - Respeta prefers-reduced-motion: sin auto-desplazamiento (sigue siendo
+   *   arrastrable).
+   */
+  const SPEED = 40; // px/s
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-marquee]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('.marquee__track');
+    if (!track) return;
+
+    const dir = root.dataset.direction === 'left' ? -1 : 1;
+
+    let setWidth = track.scrollWidth / 2;
+    let pos = 0;
+    let dragging = false;
+    let startX = 0;
+    let startPos = 0;
+    let last = 0;
+
+    const measure = () => {
+      setWidth = track.scrollWidth / 2;
+    };
+    window.addEventListener('resize', measure);
+    window.addEventListener('load', measure);
+
+    const wrap = (p: number) => {
+      if (setWidth <= 0) return p;
+      p %= setWidth;
+      if (p > 0) p -= setWidth;
+      return p;
+    };
+
+    const render = () => {
+      track.style.transform = `translate3d(${pos}px, 0, 0)`;
+    };
+
+    const tick = (t: number) => {
+      if (!last) last = t;
+      const dt = Math.min((t - last) / 1000, 0.05); // cap tras pestaña inactiva
+      last = t;
+      if (!dragging && !prefersReduced) {
+        pos = wrap(pos + dir * SPEED * dt);
+        render();
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+
+    root.addEventListener('pointerdown', (e: PointerEvent) => {
+      dragging = true;
+      startX = e.clientX;
+      startPos = pos;
+      root.classList.add('is-grabbing');
+      root.setPointerCapture(e.pointerId);
+    });
+    root.addEventListener('pointermove', (e: PointerEvent) => {
+      if (!dragging) return;
+      pos = wrap(startPos + (e.clientX - startX));
+      render();
+    });
+    const release = () => {
+      dragging = false;
+      root.classList.remove('is-grabbing');
+    };
+    root.addEventListener('pointerup', release);
+    root.addEventListener('pointercancel', release);
+  });
+</script>

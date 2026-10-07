@@ -110,6 +110,8 @@
   --gutter: clamp(1.25rem, 1.03rem + 0.939vw, 1.875rem);
   /* Inset de secciones de contenido (Sobre nosotros, Servicios…): 20 → 82px. */
   --inset-section: clamp(1.25rem, -0.13rem + 5.9vw, 7.625rem);
+  /* Separación eyebrow ↔ título de sección (y título ↔ bloque adjunto): 30px @1440. */
+  --gap-head: clamp(1rem, 0.69rem + 1.31vw, 1.875rem);
 
   /* --- Radios --------------------------------------------------------------- */
   --radius-btn: 1.25rem; /* 20px — botones y píldoras */

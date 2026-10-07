@@ -7,7 +7,14 @@ import { img } from '@/lib/images';
  * «DentAll» → «Dentinos» y «Coral Gables, Miami» → «Teatinos, Málaga»
  * (eran restos de plantilla). Ver aviso al entregar.
  */
-const features = [
+interface Feature {
+  icon: string;
+  title: string;
+  subtitle?: string;
+  body: string;
+}
+
+const features: Feature[] = [
   {
     icon: 'feat-mouth-mirror',
     title: 'Tecnología que mejora decisiones',
@@ -86,7 +93,7 @@ const areas = ['a', 'b', 'c', 'd'];
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: clamp(0.75rem, 0.5rem + 1vw, 1rem);
+    gap: var(--gap-head);
     margin-bottom: clamp(2rem, 1rem + 3vw, 3.5rem);
   }
 

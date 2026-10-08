@@ -1,0 +1,264 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+
+/*
+ * «Nuestros pilares Dentinos» — acordeón horizontal de imágenes (§9: JS mínimo).
+ * Un panel abierto a la vez; al abrir otro, los demás se comprimen y su texto
+ * se oculta con transición. Solo el 1º tiene contenido real (resto [PENDIENTE]).
+ */
+interface Pilar {
+  slug: string;
+  title: string;
+  alt: string;
+  /** HTML corto (permite <u> para subrayar un término). */
+  text: string;
+}
+
+const pilares: Pilar[] = [
+  {
+    slug: 'pilar-1',
+    title: 'Tu salud primero',
+    alt: 'Odontóloga de Dentinos mostrando una radiografía dental en pantalla a una paciente',
+    text: '<p>En la clínica dental Dentinos contamos con un amplio abanico de tratamientos que abarcan desde la odontología conservadora hasta los procedimientos de <u>estética dental</u> más innovadores.</p>',
+  },
+  {
+    slug: 'pilar-2',
+    title: 'Tu confianza primero',
+    alt: 'Odontólogas de Dentinos realizando un tratamiento a una paciente',
+    text: '<p>La relación entre dentista y paciente debe de ser de total confianza. Por este motivo, nuestro equipo médico actúa siempre con corrección, respetando en todo momento la intimidad del paciente y sus convicciones.</p>',
+  },
+  {
+    slug: 'pilar-3',
+    title: 'Tu tiempo es importante',
+    alt: 'Dos profesionales de Dentinos en la recepción de la clínica',
+    text: '<p>En Dentinos nos comprometemos contigo y con tu tiempo. Haremos todo lo posible para evitar cualquier retraso injustificado y trataremos de atenderte con puntualidad, sin esperas innecesarias.</p><p>Te informaremos de los tiempos necesarios para tu cita de forma que puedas organizar tu día sin problemas.</p>',
+  },
+  {
+    slug: 'pilar-4',
+    title: 'Tú tienes mucho que decir',
+    alt: 'Odontóloga de Dentinos durante una consulta con un paciente',
+    text: '<p>Escuchar a nuestros pacientes es fundamental para nosotros. La confianza y las expectativas que depositan en nuestro criterio clínico son importantes para poder realizar tratamientos acordes a sus necesidades.</p>',
+  },
+  {
+    slug: 'pilar-5',
+    title: 'Para siempre',
+    alt: 'Equipo de profesionales de la Clínica Dental Dentinos',
+    text: '<p>Queremos ser tu clínica dental de confianza para toda la vida. La amplia experiencia de nuestro equipo especializado en las diferentes áreas de la odontología nos permite tratar a familias completas que salen de nuestra clínica con sonrisas sanas y relucientes.</p>',
+  },
+];
+---
+
+<section class="pillars" aria-labelledby="pillars-title">
+  <div class="pillars__inner">
+    <h2 id="pillars-title" class="pillars__title">
+      Nuestros pilares <span class="pillars__brand">Dentinos</span>
+    </h2>
+
+    <ul class="pillars__list" role="list">
+      {
+        pilares.map((p, i) => (
+          <li class:list={['pillars__item', { 'is-open': i === 0 }]}>
+            <Image
+              src={img(p.slug)}
+              alt={p.alt}
+              widths={[250, 500, 700, 950]}
+              sizes="(min-width: 768px) 48vw, 92vw"
+              class="pillars__img"
+            />
+            <span class="pillars__scrim" aria-hidden="true" />
+            <div class="pillars__content">
+              <h3 id={`pillar-${i}`} class="pillars__name">
+                {p.title}
+              </h3>
+              <div class="pillars__text" set:html={p.text} />
+            </div>
+            <button
+              type="button"
+              class="pillars__trigger"
+              aria-expanded={i === 0 ? 'true' : 'false'}
+              aria-labelledby={`pillar-${i}`}
+              data-pillar={i}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .pillars {
+    background-color: var(--color-white);
+    padding-top: clamp(2rem, 1.2rem + 3vw, 3.125rem); /* → 50px @1440 */
+    padding-bottom: var(--section-py);
+  }
+
+  .pillars__inner {
+    padding-inline: var(--inset-section);
+  }
+
+  .pillars__title {
+    text-align: center;
+    font-weight: 400;
+    font-size: clamp(2rem, 1.384rem + 2.63vw, 4.5rem); /* 32 → 60px @1440 */
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-active); /* #174075 */
+  }
+
+  .pillars__brand {
+    font-style: italic;
+  }
+
+  /* --- Acordeón ---------------------------------------------------------- */
+  .pillars__list {
+    list-style: none;
+    padding: 0;
+    margin-top: clamp(2rem, 1.2rem + 3vw, 3.125rem); /* título → fotos, 50px */
+    display: flex;
+    gap: clamp(0.75rem, 0.4rem + 1.4vw, 1.5625rem); /* → 25px */
+    height: clamp(20rem, 18.375rem + 6.95vw, 30rem); /* 394px @1440 */
+  }
+
+  .pillars__item {
+    position: relative;
+    flex: 1 1 0; /* comprimido */
+    min-width: 0;
+    border-radius: 1.25rem; /* 20px */
+    overflow: hidden;
+    transition: flex-grow var(--duration-slow) var(--ease-out-soft);
+  }
+
+  /* 685 / 123 ≈ 5.57 → el panel abierto ocupa su proporción del Figma. */
+  .pillars__item.is-open {
+    flex-grow: 5.57;
+  }
+
+  .pillars__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Velo inferior (degradado + leve esmerilado) para legibilidad del texto. */
+  .pillars__scrim {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 72%;
+    background: linear-gradient(180deg, rgb(0 0 0 / 0) 0%, rgb(0 0 0 / 0.88) 100%);
+    backdrop-filter: blur(13px);
+    -webkit-backdrop-filter: blur(13px);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 55%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 55%);
+  }
+
+  .pillars__content {
+    position: absolute;
+    inset-inline: 0; /* abarca todo el ancho de la card */
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.625rem, 0.4rem + 0.9vw, 1.25rem); /* título → texto, ~20px */
+    padding: 0 1.625rem 1.625rem; /* 26px laterales y abajo */
+    color: var(--color-white);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--ease-out-soft);
+  }
+
+  /* El texto aparece una vez el panel ya se está abriendo (se oculta al cerrar). */
+  .pillars__item.is-open .pillars__content {
+    opacity: 1;
+    transition-delay: 140ms;
+  }
+
+  .pillars__name {
+    font-weight: 400;
+    font-size: clamp(1.5rem, 1.25rem + 1.1vw, 2rem); /* 24 → 32px @1440 */
+    line-height: 1.19;
+    letter-spacing: -0.04em;
+  }
+
+  .pillars__text {
+    font-size: var(--text-lead); /* 18px @1440 */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+
+  .pillars__text :global(p + p) {
+    margin-top: 0.8em;
+  }
+
+  .pillars__text :global(u) {
+    text-underline-offset: 2px;
+  }
+
+  /* Disparador transparente que cubre el panel (zona de click). */
+  .pillars__trigger {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .pillars__trigger:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: -6px;
+    border-radius: inherit;
+  }
+
+  /* --- Móvil (<768px): acordeón vertical -------------------------------- */
+  @media (max-width: 47.9375rem) {
+    .pillars__list {
+      flex-direction: column;
+      height: min(85vh, 34rem);
+    }
+
+    .pillars__content {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.pillars');
+  if (root) {
+    const items = Array.from(
+      root.querySelectorAll<HTMLElement>('.pillars__item'),
+    );
+    const triggers = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('.pillars__trigger'),
+    );
+
+    const open = (idx: number, focus = false) => {
+      items.forEach((it, i) => it.classList.toggle('is-open', i === idx));
+      triggers.forEach((t, i) =>
+        t.setAttribute('aria-expanded', String(i === idx)),
+      );
+      if (focus) triggers[idx].focus();
+    };
+
+    triggers.forEach((trigger, i) => {
+      trigger.addEventListener('click', () => open(i));
+      trigger.addEventListener('keydown', (e) => {
+        let next: number | null = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown')
+          next = (i + 1) % triggers.length;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp')
+          next = (i - 1 + triggers.length) % triggers.length;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = triggers.length - 1;
+        if (next !== null) {
+          e.preventDefault();
+          open(next, true);
+        }
+      });
+    });
+  }
+</script>

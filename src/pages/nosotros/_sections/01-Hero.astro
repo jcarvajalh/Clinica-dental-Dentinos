@@ -5,9 +5,19 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
 ---
 
 <section class="hero" aria-labelledby="nosotros-title">
+  <!-- Fondo: dos figuras (#ACDFF0) trazadas del Figma. La forma (clip-path) va
+       en la capa interna y el blur en la externa (el orden filter→clip-path de
+       CSS, si van juntos, recortaría el desenfoque con borde duro). -->
+  <span class="hero__blob hero__blob--left" aria-hidden="true">
+    <span class="hero__blob-shape"></span>
+  </span>
+  <span class="hero__blob hero__blob--right" aria-hidden="true">
+    <span class="hero__blob-shape"></span>
+  </span>
+
   <div class="hero__inner">
     <h1 id="nosotros-title" class="hero__title">
-      Clínica dental moderna y <span class="hero__soft">acogedora</span>
+      Nuestro equipo de dentistas en <span class="hero__soft">Teatinos, Málaga</span>
     </h1>
 
     <!-- Collage en molinete (2×2) sobre la trama de puntos decorativa -->
@@ -74,27 +84,67 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
       </p>
     </div>
 
-    <CtaButtons size="lg" class="hero__cta" />
+    <div class="hero__cta">
+      <CtaButtons size="lg" />
+    </div>
   </div>
 </section>
 
 <style>
   .hero {
-    /* Degradado suave azul claro del Figma (aprox. con tokens de la paleta). */
-    background-image: linear-gradient(
-      180deg,
-      var(--color-white) 0%,
-      var(--color-blue-light) 45%,
-      var(--color-blue-light-active) 170%
-    );
-    /* Deja pasar el header fijo y recorta el sangrado de la trama de puntos. */
+    position: relative;
+    isolation: isolate; /* las manchas quedan por detrás del contenido */
+    background-color: var(--color-blue-light);
+    /* Deja pasar el header fijo y recorta el sangrado de las manchas/puntos. */
     padding-top: calc(var(--header-height) + clamp(2.5rem, 1.5rem + 4vw, 5rem));
-    padding-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+    padding-bottom: clamp(1.25rem, 1.118rem + 0.563vw, 1.625rem); /* 26px @1440 */
     padding-inline: var(--inset-section);
     overflow: hidden;
   }
 
+  /* --- Figuras de fondo (dos manchas orgánicas, una a cada lado) --------- */
+  /* Altura = alto de la sección; ancho = 40% (80% de cada mitad). */
+  /* Capa externa: solo el desenfoque (layer blur 500 de Figma ≈ blur 250px). */
+  .hero__blob {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    filter: blur(250px);
+    pointer-events: none;
+  }
+
+  /* Capa interna: la forma trazada del Figma (clip-path en % sobre la sección). */
+  .hero__blob-shape {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-blue-light-active); /* #ACDFF0 */
+  }
+
+  .hero__blob--left .hero__blob-shape {
+    clip-path: polygon(
+      16.50% 0.00%, 22.00% 7.73%, 24.50% 16.91%, 24.00% 28.99%, 22.50% 34.78%,
+      19.00% 41.55%, 19.00% 43.96%, 26.00% 50.24%, 26.00% 58.94%, 36.50% 59.90%,
+      41.00% 63.77%, 41.00% 65.70%, 36.00% 66.67%, 36.50% 69.08%, 47.00% 69.57%,
+      47.00% 73.43%, 52.50% 74.40%, 54.00% 75.85%, 54.00% 77.78%, 34.50% 78.26%,
+      34.50% 81.16%, 60.50% 81.64%, 61.50% 85.02%, 13.00% 86.96%, 4.00% 94.69%,
+      0.00% 94.69%, 7.00% 54.11%, 8.00% 8.21%, 9.00% 0.00%
+    );
+  }
+
+  .hero__blob--right .hero__blob-shape {
+    clip-path: polygon(
+      86.50% 0.97%, 88.00% 8.21%, 88.50% 23.67%, 90.00% 34.30%, 92.50% 42.03%,
+      97.50% 47.83%, 99.50% 53.62%, 99.50% 61.35%, 97.00% 72.46%, 94.00% 80.19%,
+      87.50% 91.30%, 84.50% 91.30%, 84.50% 87.44%, 87.50% 78.26%, 89.00% 68.60%,
+      87.50% 58.45%, 85.50% 54.59%, 81.50% 50.24%, 73.00% 45.41%, 72.50% 38.16%,
+      73.50% 22.71%, 62.50% 21.26%, 62.50% 19.32%, 66.50% 18.84%, 72.00% 11.11%,
+      75.50% 10.14%, 75.50% 7.25%, 81.00% 2.42%, 81.50% 0.97%
+    );
+  }
+
   .hero__inner {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -190,6 +240,7 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
   }
 
   .hero__cta {
+    display: flex;
     justify-content: center;
     margin-top: clamp(1.25rem, 1.118rem + 0.563vw, 1.625rem); /* → 26px @1440 */
   }

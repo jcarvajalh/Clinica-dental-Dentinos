@@ -1,0 +1,82 @@
+---
+import Faqs from '@/components/sections/Faqs.astro';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+
+/*
+ * Instancia de FAQ para /nosotros. La maquetación/acordeón vive en la sección
+ * reutilizable `components/sections/Faqs.astro`. Mismo contenido que la home
+ * (solo la 1ª pregunta trae respuesta en el Figma; resto [Respuesta pendiente]).
+ */
+const faqs = [
+  {
+    question: '¿Trabajáis con niños?',
+    answer:
+      'Sí. Hacemos odontopediatría con enfoque en prevención y hábitos, y recomendamos la primera visita desde la salida del primer diente.',
+  },
+  {
+    question: '¿Dónde estáis en Málaga?',
+    answer: '[Respuesta pendiente]',
+  },
+  {
+    question: '¿Tenéis opciones si me da miedo el dentista?',
+    answer: '[Respuesta pendiente]',
+  },
+  {
+    question: '¿Hacéis radiografías, TAC dental o escáner en la clínica?',
+    answer: '[Respuesta pendiente]',
+  },
+  {
+    question: '¿Me vais a explicar el diagnóstico antes del tratamiento?',
+    answer: '[Respuesta pendiente]',
+  },
+  {
+    question: '¿Ofrecéis financiación?',
+    answer: '[Respuesta pendiente]',
+  },
+];
+---
+
+<Faqs
+  id="faqs-nosotros"
+  title="Todo lo que necesitas saber antes de tu visita."
+  faqs={faqs}
+>
+  <div class="faq-aside" slot="aside">
+    <h3 class="faq-aside__title">¿Tienes otra pregunta?</h3>
+    <p class="faq-aside__text">
+      Resolvemos tus dudas por teléfono, WhatsApp o en la clínica. Pide tu
+      primera visita gratuita y la <em>Dra. Ana Fernández-Cavada</em> valorará tu
+      caso en persona.
+    </p>
+    <CtaButtons size="lg" />
+  </div>
+</Faqs>
+
+<style>
+  .faq-aside {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1.125rem);
+  }
+
+  .faq-aside__title {
+    font-weight: 500;
+    font-size: var(--text-h3); /* 20 → 24px @1440 */
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .faq-aside__text {
+    max-width: 23rem; /* ~364px del Figma */
+    font-size: var(--text-lead); /* 16 → 18px @1440 */
+    line-height: 1.17;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .faq-aside__text em {
+    font-style: italic;
+    font-weight: 500;
+  }
+</style>

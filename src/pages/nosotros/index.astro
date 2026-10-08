@@ -1,11 +1,22 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from './_sections/01-Hero.astro';
+import Instalaciones from './_sections/02-Instalaciones.astro';
+import Tecnologia from './_sections/03-Tecnologia.astro';
+import Pilares from './_sections/04-Pilares.astro';
+import FaqsNosotros from './_sections/05-Faqs.astro';
+import CtaNosotros from './_sections/06-Cta.astro';
 ---
 
 <BaseLayout
   title="Nosotros | Clínica Dental Dentinos"
   description="Conoce a Dentinos: clínica dental moderna y acogedora en Teatinos, Málaga, con doctores especializados y tecnología de última generación."
+  solidHeader
 >
   <Hero />
+  <Instalaciones />
+  <Tecnologia />
+  <Pilares />
+  <FaqsNosotros />
+  <CtaNosotros />
 </BaseLayout>

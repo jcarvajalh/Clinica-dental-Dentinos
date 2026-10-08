@@ -1,0 +1,155 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+
+/*
+ * Galería de instalaciones (§7: contenido exclusivo de esta sección).
+ * Fila de 3 fotos (estrecha · ancha · estrecha), misma altura nativa (356px) →
+ * repartir el ancho con flex iguala las alturas (como el collage del hero).
+ */
+interface Photo {
+  slug: string;
+  alt: string;
+  size: 'narrow' | 'wide';
+}
+
+const photos: Photo[] = [
+  {
+    slug: 'instalaciones-recepcion',
+    alt: 'Recepción y sala de espera de la Clínica Dental Dentinos',
+    size: 'narrow',
+  },
+  {
+    slug: 'instalaciones-gabinete',
+    alt: 'Gabinete dental equipado con tecnología de última generación en Dentinos',
+    size: 'wide',
+  },
+  {
+    slug: 'instalaciones-sala',
+    alt: 'Zona infantil y pantalla con la marca Dentinos en la clínica',
+    size: 'narrow',
+  },
+];
+---
+
+<section class="facilities" aria-labelledby="facilities-title">
+  <div class="facilities__inner">
+    <h2 id="facilities-title" class="facilities__title">Nuestras instalaciones</h2>
+
+    <p class="facilities__text">
+      Nuestra clínica dental es un entorno tranquilo y agradable, nos preocupa tu
+      comodidad y por eso nos esforzamos en construir un ambiente calmado y
+      tecnológico. En Dentinos apostamos por un modelo de clínica dental integral
+      en la que te sentirás como en casa. Además de recibir un trato familiar y
+      cercano, encontrarás unas instalaciones limpias, accesibles y modernas.
+    </p>
+
+    <ul class="facilities__grid" role="list">
+      {
+        photos.map((p) => (
+          <li class={`facilities__item facilities__item--${p.size}`}>
+            <Image
+              src={img(p.slug)}
+              alt={p.alt}
+              widths={p.size === 'wide' ? [418, 627, 836] : [222, 333, 444]}
+              sizes={
+                p.size === 'wide'
+                  ? '(min-width: 768px) 29vw, 90vw'
+                  : '(min-width: 768px) 16vw, 90vw'
+              }
+              class="facilities__photo"
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .facilities {
+    background-color: var(--color-white);
+    padding-top: clamp(2rem, 1.2rem + 3vw, 3.125rem); /* → 50px @1440 */
+    padding-bottom: 0;
+  }
+
+  .facilities__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-inline: var(--inset-section);
+  }
+
+  /* Título: 60px @1440 (Creato 400), sigue creciendo por encima de 1440 (§6). */
+  .facilities__title {
+    font-weight: 400;
+    font-size: clamp(2rem, 1.384rem + 2.63vw, 4.5rem); /* 32 → 60px @1440 */
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  /* Entradilla centrada (18px @1440), ancho legible. */
+  .facilities__text {
+    max-width: 35.3125rem; /* 565px @1440 */
+    margin-top: clamp(2rem, 1.2rem + 3vw, 3.125rem); /* → 50px @1440 */
+    font-size: var(--text-lead);
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- Fila de fotos --------------------------------------------------- */
+  .facilities__grid {
+    list-style: none;
+    padding: 0;
+    margin-top: clamp(2rem, 1.2rem + 3vw, 3.125rem); /* → 50px @1440 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 0.9375rem); /* → 15px */
+    width: 100%;
+  }
+
+  .facilities__item {
+    width: 100%;
+    max-width: 30rem; /* móvil: fotos apiladas acotadas */
+  }
+
+  /* Proporciones reales (todas 356px de alto nativo). */
+  .facilities__item--narrow {
+    aspect-ratio: 222 / 237;
+  }
+  .facilities__item--wide {
+    aspect-ratio: 418 / 237;
+  }
+
+  .facilities__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1.25rem; /* 20px (Figma) */
+  }
+
+  /* --- Escritorio (≥768px): 3 en fila, alturas iguales por flex --------- */
+  @media (min-width: 768px) {
+    .facilities__grid {
+      flex-direction: row;
+      justify-content: center;
+      /* 891px @1440 (≈62vw); sigue creciendo en pantallas grandes (§6). */
+      max-width: min(74rem, 62vw);
+      margin-inline: auto;
+    }
+
+    .facilities__item {
+      max-width: none;
+    }
+    .facilities__item--narrow {
+      flex: 222 1 0;
+    }
+    .facilities__item--wide {
+      flex: 418 1 0;
+    }
+  }
+</style>

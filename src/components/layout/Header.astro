@@ -3,12 +3,20 @@ import { Image } from 'astro:assets';
 import { img } from '@/lib/images';
 import { mainNav } from '@/data/navigation';
 import { contactLinks, appointmentHref, site } from '@/data/site';
+import { tratamientos } from '@/data/tratamientos';
+
+interface Props {
+  /** Fuerza el header con fondo sólido desde el inicio (páginas sin hero oscuro). */
+  solid?: boolean;
+}
+
+const { solid = false } = Astro.props;
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
 ---
 
-<header class="site-header">
+<header class:list={['site-header', { 'is-solid': solid }]}>
   <div class="header-inner container-header">
     <!-- Logo -->
     <a href="/" class="logo" aria-label={`${site.legalName} — inicio`}>
@@ -26,17 +34,74 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
     <nav class="nav-desktop" aria-label="Principal">
       <ul class="nav-links">
         {
-          mainNav.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                class="nav-link"
-                aria-current={isCurrent(item.href) ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
+          mainNav.map((item) =>
+            item.href === '/tratamientos' ? (
+              <li class="nav-item nav-item--mega" data-mega>
+                <button
+                  type="button"
+                  class="nav-link nav-trigger"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  data-mega-trigger
+                >
+                  {item.label}
+                  <svg
+                    class="nav-trigger__chevron"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+
+                <div class="mega" data-mega-panel>
+                  <div class="mega__card">
+                    <ul class="mega__grid" role="list">
+                      {tratamientos.map((cat) => (
+                        <li class="mega__col">
+                          {cat.children ? (
+                            <span class="mega__cat">{cat.name}</span>
+                          ) : (
+                            <a href={cat.href} class="mega__cat mega__cat--link">
+                              {cat.name}
+                            </a>
+                          )}
+                          {cat.children && (
+                            <ul class="mega__sub" role="list">
+                              {cat.children.map((sub) => (
+                                <li>
+                                  <a href={sub.href} class="mega__sub-link">
+                                    {sub.name}
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a
+                  href={item.href}
+                  class="nav-link"
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
         }
       </ul>
 
@@ -137,6 +202,11 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
       box-shadow var(--duration-slow) var(--ease-out-soft);
   }
 
+  /* Páginas sin hero oscuro: header sólido (blanco) desde arriba, no transparente. */
+  .site-header.is-solid {
+    background-color: var(--color-white);
+  }
+
   /* Fondo blanco + sombra sutil al hacer scroll (la clase la añade el script). */
   .site-header.is-scrolled {
     background-color: var(--color-white);
@@ -224,6 +294,122 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
 
   .nav-link[aria-current='page'] {
     font-weight: 700;
+  }
+
+  /* --- Mega-menú de Tratamientos --------------------------------------- */
+  .nav-item--mega {
+    position: relative;
+  }
+
+  /* Botón disparador con la flechita. */
+  .nav-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3125rem;
+  }
+
+  .nav-trigger__chevron {
+    flex-shrink: 0;
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+
+  /* Flecha hacia arriba al abrir (hover o fijado). */
+  .nav-item--mega.is-open .nav-trigger__chevron {
+    transform: rotate(180deg);
+  }
+
+  .mega {
+    position: fixed;
+    top: calc(var(--header-height) - 2px);
+    /* left y width los fija el JS: borde izquierdo alineado con «Tratamientos». */
+    left: 0;
+    z-index: 60;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-0.5rem);
+    transition:
+      opacity var(--duration-base) var(--ease-out-soft),
+      transform var(--duration-base) var(--ease-out-soft),
+      visibility var(--duration-base);
+  }
+
+  .nav-item--mega.is-open .mega {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .mega__card {
+    background-color: var(--color-white);
+    border: 0.5px solid var(--color-border-glass);
+    border-radius: 1.25rem;
+    box-shadow: 0 1.25rem 2.5rem -1rem rgb(16 57 111 / 0.35);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .mega__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    columns: 13rem; /* ancho de columna; el nº se adapta al ancho del card */
+    column-gap: clamp(1.25rem, 0.8rem + 1.6vw, 2.25rem);
+  }
+
+  .mega__col {
+    break-inside: avoid;
+    margin-bottom: 1.375rem;
+  }
+
+  .mega__cat {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-darker);
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0.625rem; /* indent compartido con los subtratamientos */
+    border-radius: 0.5rem;
+  }
+
+  .mega__sub {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .mega__sub-link {
+    display: block;
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.3;
+    color: var(--color-blue-dark-hover);
+    padding: 0.3125rem 0.625rem;
+    border-radius: 0.5rem;
+    transition:
+      background-color var(--duration-base) var(--ease-out-soft),
+      box-shadow var(--duration-base) var(--ease-out-soft),
+      color var(--duration-base) var(--ease-out-soft);
+  }
+
+  /* Filas clicables (subtratamientos + categorías sin hijos): al pasar el cursor,
+     fondo blanco hueso + sombra fina para indicar que son enlaces. */
+  .mega__sub-link:hover,
+  .mega__cat--link:hover {
+    background-color: var(--color-bone);
+    box-shadow: var(--shadow-badge);
+    color: var(--color-blue-darker);
+  }
+
+  .mega__cat--link {
+    transition:
+      background-color var(--duration-base) var(--ease-out-soft),
+      box-shadow var(--duration-base) var(--ease-out-soft),
+      color var(--duration-base) var(--ease-out-soft);
   }
 
   /* --- Iconos de contacto (placeholder) ---------------------------------- */
@@ -481,5 +667,70 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
       header.classList.toggle('is-scrolled', window.scrollY > 4);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    // --- Mega-menú de Tratamientos ---------------------------------------
+    // Hover abre temporalmente; clic en «Tratamientos» lo fija (y lo cierra).
+    const megaItem = header.querySelector<HTMLElement>('[data-mega]');
+    const megaTrigger = header.querySelector<HTMLElement>('[data-mega-trigger]');
+    const megaPanel = header.querySelector<HTMLElement>('[data-mega-panel]');
+    if (megaItem && megaTrigger && megaPanel) {
+      let pinned = false;
+      let closeTimer: number | undefined;
+
+      // Alinea el panel a la izquierda de «Tratamientos» y evita que se salga.
+      const position = () => {
+        const left = Math.round(megaTrigger.getBoundingClientRect().left);
+        const avail = window.innerWidth - left - 24; // 24px de aire a la dcha.
+        megaPanel.style.left = `${left}px`;
+        megaPanel.style.width = `${Math.max(260, Math.min(58 * 16, avail))}px`;
+      };
+
+      const openMega = () => {
+        window.clearTimeout(closeTimer);
+        position();
+        megaItem.classList.add('is-open');
+        megaTrigger.setAttribute('aria-expanded', 'true');
+      };
+      const closeMega = (delay = 0) => {
+        window.clearTimeout(closeTimer);
+        closeTimer = window.setTimeout(() => {
+          megaItem.classList.remove('is-open');
+          megaTrigger.setAttribute('aria-expanded', 'false');
+        }, delay);
+      };
+
+      megaItem.addEventListener('pointerenter', openMega);
+      megaItem.addEventListener('pointerleave', () => {
+        if (!pinned) closeMega(120);
+      });
+
+      megaTrigger.addEventListener('click', () => {
+        pinned = !pinned;
+        if (pinned) openMega();
+        else closeMega();
+      });
+
+      megaTrigger.addEventListener('focus', openMega);
+      megaItem.addEventListener('focusout', (e) => {
+        if (!pinned && !megaItem.contains(e.relatedTarget as Node)) closeMega();
+      });
+
+      document.addEventListener('pointerdown', (e) => {
+        if (!megaItem.contains(e.target as Node)) {
+          pinned = false;
+          closeMega();
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && megaItem.classList.contains('is-open')) {
+          pinned = false;
+          closeMega();
+          megaTrigger.blur();
+        }
+      });
+      window.addEventListener('resize', () => {
+        if (megaItem.classList.contains('is-open')) position();
+      });
+    }
   }
 </script>

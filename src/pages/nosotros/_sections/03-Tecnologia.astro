@@ -1,0 +1,156 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+
+/*
+ * Tecnología (§7: contenido exclusivo). Cuadrícula 2×2 en damero:
+ *   [texto «Tecnología de vanguardia»] [foto diagnóstico]
+ *   [foto escáner]                     [texto «Escáner iTero»]
+ * Tarjetas de texto sobre blue-light-hover; fotos que rellenan su celda.
+ */
+---
+
+<section class="tech" aria-labelledby="tech-title">
+  <div class="tech__grid">
+    <!-- 1 · Texto: Tecnología de vanguardia -->
+    <article class="tech__card tech__card--text">
+      <h2 id="tech-title" class="tech__card-title">Tecnología de vanguardia</h2>
+      <div class="tech__card-body">
+        <p>
+          Uno de los elementos que nos diferencia de otras clínicas es nuestra
+          apuesta por la tecnología dental de vanguardia. En Dentinos contamos
+          con equipos avanzados que nos permiten realizar diagnósticos más
+          precisos, mejorar la planificación de los tratamientos y ofrecer una
+          atención más cómoda.
+        </p>
+        <p>
+          Nuestra clínica dispone de cámara intraoral, radiografía panorámica de
+          última generación, TAC dental en 3D, rayos intraorales digitales,
+          teleradiografía y escáner intraoral. Estas herramientas nos permiten
+          obtener imágenes detalladas de la boca y las estructuras dentales,
+          facilitando el diagnóstico y la planificación personalizada de
+          tratamientos de odontología.
+        </p>
+      </div>
+    </article>
+
+    <!-- 2 · Foto: diagnóstico en monitor -->
+    <div class="tech__card tech__card--photo">
+      <Image
+        src={img('tecnologia-diagnostico')}
+        alt="Odontólogas de Dentinos revisando un diagnóstico 3D en el monitor"
+        widths={[320, 463, 640, 926]}
+        sizes="(min-width: 768px) 32vw, 90vw"
+        class="tech__photo"
+      />
+    </div>
+
+    <!-- 3 · Foto: escáner intraoral iTero -->
+    <div class="tech__card tech__card--photo">
+      <Image
+        src={img('tecnologia-escaner')}
+        alt="Profesionales de Dentinos usando el escáner intraoral iTero con una paciente"
+        widths={[320, 463, 640, 926]}
+        sizes="(min-width: 768px) 32vw, 90vw"
+        class="tech__photo"
+      />
+    </div>
+
+    <!-- 4 · Texto: Escáner iTero -->
+    <article class="tech__card tech__card--text">
+      <h2 class="tech__card-title">Escáner iTero</h2>
+      <div class="tech__card-body">
+        <p>
+          En Dentinos apostamos por la tecnología de vanguardia para ofrecer
+          tratamientos más precisos, cómodos y personalizados. Contamos con el
+          escáner iTero, una avanzada herramienta que permite obtener imágenes
+          digitales en 3D de los dientes y estructuras orales, facilitando el
+          diagnóstico y la planificación de cada tratamiento.
+        </p>
+        <p>
+          Esta tecnología es especialmente útil en ortodoncia invisible e
+          Invisalign, ya que permite diseñar alineadores personalizados sin
+          necesidad de utilizar los tradicionales moldes dentales. Además, el
+          escáner iTero facilita el seguimiento de la evolución del tratamiento y
+          la planificación de implantes dentales.
+        </p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .tech {
+    background-color: var(--color-white);
+    padding-top: clamp(0.75rem, 0.684rem + 0.282vw, 0.9375rem); /* → 15px @1440 */
+    padding-bottom: 0;
+  }
+
+  .tech__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(0.75rem, 0.684rem + 0.282vw, 0.9375rem); /* → 15px @1440 */
+    width: 100%;
+    padding-inline: var(--inset-section);
+  }
+
+  /* --- Tarjeta base ---------------------------------------------------- */
+  .tech__card {
+    border-radius: 1.25rem; /* 20px (Figma) */
+    overflow: hidden;
+  }
+
+  .tech__card--text {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 0.9rem + 1.5vw, 1.8125rem); /* título → cuerpo, ~29px */
+    padding: clamp(1.5rem, 1.1rem + 1.7vw, 2.25rem); /* ~36px @1440 */
+    background-color: var(--color-blue-light-hover); /* #EFF7FB */
+  }
+
+  .tech__card-title {
+    font-weight: 500;
+    font-size: clamp(1.625rem, 1.317rem + 1.315vw, 3rem); /* 26 → 40px @1440 */
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .tech__card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    font-size: var(--text-lead); /* 18px @1440 */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-hover); /* #2A5685 */
+  }
+
+  /* --- Foto que rellena su celda (misma altura que la tarjeta pareja) --- */
+  .tech__card--photo {
+    min-height: 15rem; /* altura razonable cuando la columna va sola (móvil) */
+  }
+
+  .tech__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* --- Escritorio (≥768px): damero 2×2, celdas emparejadas en altura ---- */
+  @media (min-width: 768px) {
+    .tech__grid {
+      grid-template-columns: 1fr 1fr;
+      /* 946px @1440 (≈66vw); sigue creciendo en pantallas grandes (§6). */
+      max-width: min(78rem, 66vw);
+      margin-inline: auto;
+      padding-inline: 0;
+      align-items: stretch;
+    }
+
+    .tech__card--photo {
+      min-height: 0;
+    }
+  }
+</style>

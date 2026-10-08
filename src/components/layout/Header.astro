@@ -129,10 +129,12 @@ const isCurrent = (href: string) => currentPath === href.replace(/\/$/, '');
     inset-inline: 0;
     top: 0;
     z-index: 50;
-    /* Transparente sobre el hero; se vuelve blanco al hacer scroll. */
+    /* Transparente sobre el hero; se vuelve blanco al hacer scroll.
+       Transición más larga (--duration-slow) para que el cambio de fondo
+       sea suave y no brusco. */
     background-color: transparent;
-    transition: background-color var(--duration-base) var(--ease-out-soft),
-      box-shadow var(--duration-base) var(--ease-out-soft);
+    transition: background-color var(--duration-slow) var(--ease-out-soft),
+      box-shadow var(--duration-slow) var(--ease-out-soft);
   }
 
   /* Fondo blanco + sombra sutil al hacer scroll (la clase la añade el script). */

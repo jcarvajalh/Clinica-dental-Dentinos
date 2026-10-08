@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { img } from '@/lib/images';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
 
 /*
  * Contenido exclusivo de esta sección (§7): el equipo médico solo aparece
@@ -83,6 +84,10 @@ const members: Member[] = [
         ))
       }
     </ul>
+
+    <div class="team__cta">
+      <CtaButtons size="lg" />
+    </div>
   </div>
 </section>
 
@@ -102,6 +107,13 @@ const members: Member[] = [
     flex-wrap: wrap;
     gap: var(--gap-head);
     margin-bottom: clamp(2.25rem, 1.25rem + 3vw, 4rem);
+  }
+
+  /* CTA centrado al pie de la sección. */
+  .team__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2.5rem, 1.8rem + 3vw, 3.75rem);
   }
 
   /* --- Rejilla: 3 por fila; la última fila (2) queda centrada ---------- */

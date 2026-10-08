@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import { img } from '@/lib/images';
 import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
 ---
 
 <section class="services" aria-labelledby="services-title">
@@ -14,33 +15,63 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
     </header>
 
     <div class="services__grid">
-      <!-- Lista seleccionable (tabs verticales) -->
-      <div
-        class="services__list"
-        role="tablist"
-        aria-orientation="vertical"
-        aria-label="Tratamientos"
-      >
-        {
-          tratamientos.map((t) => {
-            const active = t.slug === defaultTreatmentSlug;
-            return (
-              <button
-                type="button"
-                role="tab"
-                id={`svc-tab-${t.slug}`}
-                class="services__tab"
-                aria-controls={`svc-panel-${t.slug}`}
-                aria-selected={active ? 'true' : 'false'}
-                tabindex={active ? 0 : -1}
-                data-svc={t.slug}
-              >
-                <span class="services__name">{t.name}</span>
-                <span class="services__summary">{t.summary}</span>
-              </button>
-            );
-          })
-        }
+      <!-- Lista seleccionable (tabs verticales): muestra ~4 y desliza el resto -->
+      <div class="services__list-wrap">
+        <div
+          class="services__list"
+          role="tablist"
+          aria-orientation="vertical"
+          aria-label="Tratamientos"
+        >
+          {
+            tratamientos.map((t) => {
+              const active = t.slug === defaultTreatmentSlug;
+              return (
+                <button
+                  type="button"
+                  role="tab"
+                  id={`svc-tab-${t.slug}`}
+                  class="services__tab"
+                  aria-controls={`svc-panel-${t.slug}`}
+                  aria-selected={active ? 'true' : 'false'}
+                  tabindex={active ? 0 : -1}
+                  data-svc={t.slug}
+                >
+                  <span class="services__row">
+                    <span class="services__name">{t.name}</span>
+                    {t.price && <span class="services__price">{t.price}</span>}
+                  </span>
+                  <span class="services__summary">{t.summary}</span>
+                </button>
+              );
+            })
+          }
+        </div>
+
+        <div class="services__nav" aria-hidden="true">
+          <button
+            type="button"
+            class="services__arrow"
+            data-dir="prev"
+            aria-label="Ver tratamientos anteriores"
+            tabindex="-1"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="services__arrow"
+            data-dir="next"
+            aria-label="Ver más tratamientos"
+            tabindex="-1"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div class="services__content">
@@ -114,7 +145,7 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
                   </div>
 
                   <a href={t.href} class="btn btn-primary btn-sm services__more">
-                    Leer más
+                    Conoce las opciones
                   </a>
                 </div>
               );
@@ -122,6 +153,10 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
           }
         </div>
       </div>
+    </div>
+
+    <div class="services__cta">
+      <CtaButtons size="lg" />
     </div>
   </div>
 </section>
@@ -150,9 +185,26 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
   }
 
   /* --- Lista de tratamientos (tabs) ------------------------------------ */
+  /* Muestra ~4 tratamientos; el resto se desliza con las flechas o la rueda,
+     sin alterar la altura de la sección (viewport acotado por max-height). */
+  .services__list-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+  }
+
   .services__list {
     display: flex;
     flex-direction: column;
+    max-height: clamp(19rem, 13rem + 16vw, 28.375rem); /* ~4 tratamientos */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: y proximity;
+    /* Barra nativa oculta: el deslizamiento se hace con las flechas/rueda. */
+    scrollbar-width: none;
+  }
+  .services__list::-webkit-scrollbar {
+    display: none;
   }
 
   .services__tab {
@@ -163,6 +215,7 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
     text-align: left;
     padding-block: clamp(1.25rem, 0.9rem + 1.4vw, 1.625rem);
     letter-spacing: -0.04em;
+    scroll-snap-align: start;
     transition: opacity var(--duration-base) var(--ease-out-soft);
   }
 
@@ -171,19 +224,66 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
     border-top: 0.8px solid var(--color-divider);
   }
 
-  /* Sin espacio sobrante en los extremos: la lista cuadra con la imagen. */
+  /* Sin espacio sobrante al inicio: la lista cuadra con la imagen. */
   .services__tab:first-child {
     padding-top: 0;
   }
-  .services__tab:last-child {
-    padding-bottom: 0;
+
+  /* Título + precio en una fila; precio pegado al borde derecho. */
+  .services__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
   }
 
   .services__name {
-    font-size: var(--text-h2);
+    font-size: var(--text-h3); /* reducido para dejar sitio al precio */
     line-height: 1.05;
     color: var(--color-blue-dark-active);
     transition: opacity var(--duration-base) var(--ease-out-soft);
+  }
+
+  .services__price {
+    flex-shrink: 0;
+    font-size: var(--text-body);
+    font-weight: 500;
+    line-height: 1.05;
+    white-space: nowrap;
+    color: var(--color-blue-darker);
+  }
+
+  .services__tab[aria-selected='false'] .services__price {
+    opacity: 0.51;
+  }
+
+  /* --- Flechas de desplazamiento --------------------------------------- */
+  .services__nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .services__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    color: var(--color-blue-darker);
+    background-color: var(--color-blue-light-hover);
+    transition:
+      background-color var(--duration-base) var(--ease-out-soft),
+      opacity var(--duration-base) var(--ease-out-soft);
+  }
+
+  .services__arrow:hover {
+    background-color: var(--color-blue-light-active);
+  }
+
+  .services__arrow[disabled] {
+    opacity: 0.35;
+    cursor: default;
   }
 
   .services__summary {
@@ -235,6 +335,26 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
   }
   .services__photo--placeholder[hidden] {
     display: none;
+  }
+
+  /* Transición suave y breve al cambiar de tratamiento (imagen + panel).
+     Usa --duration-base → se neutraliza con prefers-reduced-motion (global). */
+  @keyframes svc-fade {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Se activa desde JS (clase .is-switching) para garantizar que la animación
+     se reinicie en cada cambio de tratamiento, no solo al mostrarse. */
+  .services__photo.is-switching,
+  .services__panel.is-switching {
+    animation: svc-fade var(--duration-base) var(--ease-out-soft);
   }
 
   /* --- Panel ---------------------------------------------------------- */
@@ -303,6 +423,13 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
     margin-top: auto;
   }
 
+  /* CTA centrado al pie de la sección (como en «Equipo médico»). */
+  .services__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2.5rem, 1.8rem + 3vw, 3.75rem);
+  }
+
   /* --- Escritorio (lg ≥ 1024px): lista | (imagen + panel) ------------- */
   @media (min-width: 1024px) {
     .services__grid {
@@ -337,6 +464,14 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
       root.querySelectorAll<HTMLElement>('[data-svc-media]'),
     );
 
+    // Reinicia la animación de entrada (quita la clase, fuerza reflow, la repone).
+    const playFade = (el: HTMLElement | undefined) => {
+      if (!el) return;
+      el.classList.remove('is-switching');
+      void el.offsetWidth; // fuerza reflow → la animación arranca de cero
+      el.classList.add('is-switching');
+    };
+
     const activate = (slug: string, focus = false) => {
       tabs.forEach((tab) => {
         const selected = tab.dataset.svc === slug;
@@ -346,6 +481,9 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
       });
       panels.forEach((p) => (p.hidden = p.dataset.svcPanel !== slug));
       medias.forEach((m) => (m.hidden = m.dataset.svcMedia !== slug));
+
+      playFade(panels.find((p) => p.dataset.svcPanel === slug));
+      playFade(medias.find((m) => m.dataset.svcMedia === slug));
     };
 
     tabs.forEach((tab, i) => {
@@ -364,5 +502,34 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
         }
       });
     });
+
+    /* --- Deslizar la lista (muestra ~4, desliza el resto) --------------- */
+    const list = root.querySelector<HTMLElement>('.services__list');
+    const arrows = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('.services__arrow'),
+    );
+
+    if (list && arrows.length) {
+      const syncArrows = () => {
+        const max = list.scrollHeight - list.clientHeight;
+        arrows.forEach((btn) => {
+          const atStart = list.scrollTop <= 1;
+          const atEnd = list.scrollTop >= max - 1;
+          btn.disabled = btn.dataset.dir === 'prev' ? atStart : atEnd;
+        });
+      };
+
+      arrows.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const dir = btn.dataset.dir === 'next' ? 1 : -1;
+          const first = tabs[0];
+          const step = first ? first.offsetHeight * 2 : list.clientHeight * 0.8;
+          list.scrollBy({ top: dir * step, behavior: 'smooth' });
+        });
+      });
+
+      list.addEventListener('scroll', syncArrows, { passive: true });
+      syncArrows();
+    }
   }
 </script>

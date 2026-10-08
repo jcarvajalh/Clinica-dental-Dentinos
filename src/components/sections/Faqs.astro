@@ -1,0 +1,264 @@
+---
+/*
+ * Sección reutilizable de Preguntas Frecuentes (§3: vive en components/sections/
+ * porque aparece en varias páginas). Se parametriza con props + un slot `aside`
+ * para la tarjeta inferior izquierda (título, texto y CTA propios de cada página).
+ *
+ * El acordeón es accesible (botón + aria-expanded + región) con transición suave
+ * (grid-template-rows) y permite una sola pregunta abierta a la vez.
+ */
+interface Faq {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  faqs: Faq[];
+  /** Id único para enlazar el <h2> (por si hay varias secciones en la página). */
+  id?: string;
+}
+
+const { eyebrow = 'Preguntas frecuentes', title, faqs, id = 'faqs' } = Astro.props;
+const titleId = `${id}-title`;
+---
+
+<section class="faqs" aria-labelledby={titleId}>
+  <div class="faqs__inner">
+    <header class="faqs__head">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 id={titleId} class="faqs__title">{title}</h2>
+    </header>
+
+    <div class="faqs__aside">
+      <slot name="aside" />
+    </div>
+
+    <ul class="faqs__list" role="list">
+      {
+        faqs.map((f, i) => {
+          const panelId = `${id}-panel-${i}`;
+          const triggerId = `${id}-trigger-${i}`;
+          const open = i === 0;
+          return (
+            <li class="faq" data-open={open ? '' : undefined}>
+              <h3 class="faq__heading">
+                <button
+                  type="button"
+                  class="faq__trigger"
+                  id={triggerId}
+                  aria-expanded={open ? 'true' : 'false'}
+                  aria-controls={panelId}
+                >
+                  <span class="faq__question">{f.question}</span>
+                  <svg
+                    class="faq__icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    fill="none"
+                  >
+                    <path
+                      d="M6 9l6 6 6-6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+              </h3>
+              <div
+                class="faq__panel"
+                id={panelId}
+                role="region"
+                aria-labelledby={triggerId}
+              >
+                <div class="faq__answer">
+                  <p>{f.answer}</p>
+                </div>
+              </div>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .faqs {
+    background-color: var(--color-white);
+    padding-block: var(--section-py);
+  }
+
+  .faqs__inner {
+    display: grid;
+    gap: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+    padding-inline: var(--inset-section);
+  }
+
+  /* --- Cabecera (columna izquierda) ------------------------------------ */
+  .faqs__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1rem, 0.7rem + 1.2vw, 1.875rem);
+  }
+
+  .faqs__title {
+    font-weight: 400;
+    font-size: clamp(2rem, 1.65rem + 1.5vw, 3.75rem); /* 32 → 48px @1440 → 60px */
+    line-height: 1.19; /* 57/48 */
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  /* --- Tarjeta inferior izquierda (slot aside) ------------------------- */
+  .faqs__aside {
+    padding: clamp(1.25rem, 0.9rem + 1.4vw, 1.625rem); /* ~26px @1440 */
+    background-color: var(--color-blue-light-hover);
+    border-radius: 1.25rem; /* 20px */
+  }
+
+  /* --- Lista / acordeón (columna derecha) ------------------------------ */
+  .faqs__list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.4375rem, 0.35rem + 0.3vw, 0.4375rem); /* 7px entre tarjetas */
+  }
+
+  .faq {
+    background-color: var(--color-blue-light-hover);
+    border-radius: 1.25rem; /* 20px */
+  }
+
+  .faq__heading {
+    margin: 0;
+    font: inherit;
+  }
+
+  .faq__trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(0.75rem, 0.6rem + 0.5vw, 0.9375rem)
+      clamp(1rem, 0.8rem + 0.9vw, 1.375rem); /* 15px / 22px @1440 */
+    text-align: left;
+    border-radius: inherit;
+  }
+
+  .faq__question {
+    font-weight: 500;
+    font-size: var(--text-h3); /* 20 → 24px @1440 */
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .faq__icon {
+    flex-shrink: 0;
+    width: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    height: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+    color: var(--color-blue-darker);
+    transition: transform var(--duration-slow) var(--ease-out-soft);
+  }
+
+  .faq[data-open] .faq__icon {
+    transform: rotate(180deg);
+  }
+
+  /* Panel animado por altura con grid-template-rows (0fr → 1fr). */
+  .faq__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-slow) var(--ease-out-soft);
+  }
+
+  .faq[data-open] .faq__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .faq__answer {
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--duration-slow) var(--ease-out-soft),
+      visibility var(--duration-slow) var(--ease-out-soft);
+  }
+
+  .faq[data-open] .faq__answer {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .faq__answer p {
+    padding: 0 clamp(1rem, 0.8rem + 0.9vw, 1.375rem)
+      clamp(1rem, 0.8rem + 0.9vw, 1.375rem);
+    font-size: var(--text-body); /* 16 → 21px */
+    line-height: 1.19;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- Escritorio: dos columnas (450 : 671 @1440) --------------------- */
+  @media (min-width: 56.25rem) {
+    .faqs__inner {
+      grid-template-columns: 450fr 671fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        'head list'
+        'aside list';
+      column-gap: clamp(2.5rem, -2rem + 10vw, 9.6875rem); /* 155px @1440 */
+      row-gap: 0;
+      align-content: start;
+    }
+
+    .faqs__head {
+      grid-area: head;
+    }
+
+    .faqs__aside {
+      grid-area: aside;
+      align-self: end;
+      margin-bottom: clamp(0rem, -3rem + 4vw, 1.0625rem);
+    }
+
+    .faqs__list {
+      grid-area: list;
+    }
+  }
+</style>
+
+<script>
+  // Acordeón: una sola pregunta abierta a la vez, por cada sección FAQ.
+  document.querySelectorAll<HTMLElement>('.faqs').forEach((section) => {
+    const items = Array.from(section.querySelectorAll<HTMLElement>('.faq'));
+
+    items.forEach((item) => {
+      const trigger = item.querySelector<HTMLButtonElement>('.faq__trigger');
+      if (!trigger) return;
+
+      trigger.addEventListener('click', () => {
+        const isOpen = item.hasAttribute('data-open');
+
+        // Cerrar todas.
+        items.forEach((it) => {
+          it.removeAttribute('data-open');
+          it.querySelector('.faq__trigger')?.setAttribute('aria-expanded', 'false');
+        });
+
+        // Abrir la pulsada solo si estaba cerrada (si estaba abierta, se cierra).
+        if (!isOpen) {
+          item.setAttribute('data-open', '');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  });
+</script>

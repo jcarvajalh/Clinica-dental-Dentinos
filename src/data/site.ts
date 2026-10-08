@@ -8,19 +8,22 @@ export const site = {
   // TODO: dominio de producción real (coincidir con astro.config.mjs → site)
   domain: 'https://dominio.com',
 
-  // --- Contacto ([PENDIENTE]) ---
-  phone: '', // [PENDIENTE] teléfono en formato legible, p. ej. "+57 300 000 0000"
-  whatsapp: '', // [PENDIENTE] número internacional SIN "+" ni espacios, p. ej. "573000000000"
-  email: '', // [PENDIENTE] correo de contacto
-  mapsUrl: '', // [PENDIENTE] URL de Google Maps / cómo llegar
+  // --- Contacto ---
+  phone: '+34 649 989 506', // móvil (formato legible)
+  phoneLandline: '951 93 53 78', // fijo
+  whatsapp: '34649989506', // internacional SIN "+" ni espacios
+  email: 'clinicadentaldentinos@gmail.com',
+  mapsUrl:
+    'https://www.google.com/maps/search/?api=1&query=Calle+Poeta+Aurora+Albornoz+7+Teatinos+29010+M%C3%A1laga',
 
-  // --- Dirección ([PENDIENTE]) ---
+  // --- Dirección ---
   address: {
-    street: '', // [PENDIENTE]
-    city: '', // [PENDIENTE]
-    region: '', // [PENDIENTE]
-    postalCode: '', // [PENDIENTE]
-    country: '', // [PENDIENTE]
+    street: 'Calle Poeta Aurora Albornoz, 7',
+    district: 'Teatinos',
+    postalCode: '29010',
+    city: 'Málaga',
+    region: 'Málaga',
+    country: 'España',
   },
 
   // --- Horarios ([PENDIENTE]) ---

@@ -1,0 +1,280 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import { site } from '@/data/site';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+
+/*
+ * CTA de cierre reutilizable (§3: vive en components/sections/).
+ * Columna izquierda: titular + entradilla + CTA + datos de contacto (desde
+ * src/data/site.ts, §1). Columna derecha: carrusel vertical de 3 imágenes que
+ * se repiten en bucle y avanzan con el scroll de la página (no se mueve solo).
+ * La sección queda "fijada" (sticky) mientras las 3 imágenes pasan por el
+ * centro; luego la página continúa. En móvil / prefers-reduced-motion no hay
+ * pin ni scrub: se muestra una sola imagen estática.
+ */
+interface Props {
+  title: string;
+  subtitle: string;
+  /** Slugs de las 3 imágenes del carrusel, en orden de bucle. */
+  images: string[];
+  id?: string;
+}
+
+const { title, subtitle, images, id = 'cta' } = Astro.props;
+const titleId = `${id}-title`;
+
+// Contacto desde los datos del negocio (§1).
+const { address, phone, phoneLandline, email, mapsUrl } = site;
+const addressLine = `${address.street} ${address.district}, ${address.postalCode}, ${address.city}`;
+const telHref = (n: string) => `tel:${n.replace(/[^\d+]/g, '')}`;
+
+// El set se duplica para el bucle vertical sin costura. Imágenes rectas.
+const loop = [...images, ...images];
+---
+
+<section class="cta" aria-labelledby={titleId} data-scroll-carousel>
+  <div class="cta__pin">
+    <div class="cta__inner">
+      <div class="cta__content">
+        <h2 id={titleId} class="cta__title">{title}</h2>
+        <p class="cta__subtitle">{subtitle}</p>
+
+        <CtaButtons size="lg" class="cta__buttons" />
+
+        <address class="cta__contact">
+          <a class="cta__link" href={mapsUrl}>{addressLine}</a>
+          <p class="cta__phones">
+            <a class="cta__link" href={telHref(phone)}>{phone}</a>
+            {' | '}
+            <a class="cta__link" href={telHref(`+34 ${phoneLandline}`)}>{phoneLandline}</a>
+          </p>
+          <a class="cta__link" href={`mailto:${email}`}>{email}</a>
+        </address>
+      </div>
+
+      <div class="cta__carousel" aria-hidden="true">
+        <div class="cta__track" data-track>
+          {
+            loop.map((slug) => (
+              <Image
+                src={img(slug)}
+                alt=""
+                widths={[366, 540, 732]}
+                sizes="(min-width: 64rem) 26vw, 80vw"
+                class="cta__slide"
+              />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Carrusel vertical: se desplaza con el scroll de la página mientras la sección
+  // cruza el viewport (sin fijar la pantalla, la sección mantiene su altura). Las
+  // imágenes tienen rotación fija y el bucle duplicado da la ilusión de círculo
+  // infinito; en reposo (sección centrada) la imagen central queda recta y
+  // centrada. Desactivado en móvil / prefers-reduced-motion.
+  const mqDesktop = window.matchMedia('(min-width: 64rem)');
+  const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const FACTOR = 0.6; // px de desplazamiento del carrusel por px de scroll
+
+  document
+    .querySelectorAll<HTMLElement>('.cta[data-scroll-carousel]')
+    .forEach((section) => {
+      const track = section.querySelector<HTMLElement>('[data-track]');
+      const carousel = section.querySelector<HTMLElement>('.cta__carousel');
+      if (!track || !carousel) return;
+      const slides = Array.from(
+        track.querySelectorAll<HTMLElement>('.cta__slide'),
+      );
+
+      let setHeight = 0;
+      let baseOffset = 0;
+      const measure = () => {
+        setHeight = track.scrollHeight / 2;
+        // Centrar la 2ª imagen (central) cuando la sección está centrada.
+        const mid = slides[1];
+        if (mid) {
+          baseOffset =
+            carousel.clientHeight / 2 - (mid.offsetTop + mid.offsetHeight / 2);
+        }
+      };
+
+      const wrap = (v: number) => {
+        if (setHeight <= 0) return v;
+        v = ((v % setHeight) + setHeight) % setHeight;
+        return v - setHeight; // rango (-setHeight, 0], sin costura
+      };
+
+      const update = () => {
+        if (!mqDesktop.matches || mqReduce.matches) {
+          track.style.transform = '';
+          return;
+        }
+        const rect = section.getBoundingClientRect();
+        const delta =
+          window.innerHeight / 2 - (rect.top + rect.height / 2);
+        const y = wrap(baseOffset + delta * FACTOR);
+        track.style.transform = `translate3d(0, ${y}px, 0)`;
+      };
+
+      measure();
+      update();
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', () => {
+        measure();
+        update();
+      });
+      window.addEventListener('load', () => {
+        measure();
+        update();
+      });
+    });
+</script>
+
+<style>
+  /* El panel azul (banda) vive en .cta__inner; .cta y .cta__pin son
+     transparentes. Así la sección solo mide lo del Figma, no 100vh. */
+  .cta__inner {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 3.5rem);
+    width: 100%;
+    padding-block: clamp(2.5rem, 1.8rem + 2.8vw, 3.75rem);
+    padding-inline: var(--inset-section);
+    background-color: var(--color-blue-light-hover);
+  }
+
+  /* --- Columna de texto ------------------------------------------------ */
+  .cta__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(1rem, 0.7rem + 1.2vw, 1.5rem);
+    max-width: 60rem; /* ancho para que el titular quepa en 2 líneas */
+  }
+
+  .cta__title {
+    font-weight: 500;
+    font-size: clamp(2.5rem, 1.97rem + 2.25vw, 5rem); /* 40 → 64px @1440 → 80px */
+    line-height: 1.19; /* 76/64 */
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .cta__subtitle {
+    font-weight: 400;
+    font-size: var(--text-h3); /* 20 → 24px @1440 */
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .cta__buttons {
+    margin-block: clamp(0.25rem, 0.1rem + 0.6vw, 0.75rem);
+  }
+
+  .cta__contact {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.625rem, 0.5rem + 0.5vw, 1rem);
+    font-style: normal; /* <address> no itálico */
+    font-size: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem); /* ~16 → 17px */
+    line-height: 1.19;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .cta__phones {
+    margin: 0;
+  }
+
+  .cta__link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    transition: color var(--duration-base) var(--ease-out-soft);
+  }
+
+  .cta__phones .cta__link {
+    white-space: nowrap;
+  }
+
+  .cta__link:hover {
+    color: var(--color-blue-darker);
+  }
+
+  /* --- Carrusel -------------------------------------------------------- */
+  .cta__carousel {
+    position: relative;
+    overflow: hidden;
+    /* Móvil: solo se ve la imagen central, estática (altura según la imagen). */
+  }
+
+  .cta__track {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem; /* 40px (Figma) */
+    will-change: transform;
+  }
+
+  /* Imágenes 366×295 (Figma) con su border-radius. */
+  .cta__slide {
+    width: 100%;
+    max-width: 18rem; /* tamaño reducido */
+    aspect-ratio: 366 / 295;
+    object-fit: cover;
+    border-radius: 1.25rem; /* 20px */
+    margin-inline: auto;
+  }
+
+  /* Móvil: una sola imagen (la central), sin rotación ni bucle. */
+  .cta__slide {
+    display: none;
+  }
+  .cta__slide:nth-child(2) {
+    display: block;
+  }
+
+  /* --- Escritorio (lg ≥ 1024px): dos columnas ------------------------- */
+  @media (min-width: 64rem) {
+    /* La sección mide exactamente la banda azul (altura del Figma ~553px),
+       sin pin de pantalla completa. El carrusel se mueve con el scroll de la
+       página (parallax), no fija la pantalla. */
+    .cta__inner {
+      min-height: clamp(28rem, 60svh, 34.5rem); /* ~448 → 552px */
+      padding-block: 0;
+      grid-template-columns: minmax(0, 725fr) minmax(0, 366fr);
+      align-items: center;
+    }
+
+    .cta__content {
+      align-self: center;
+      padding-block: clamp(2.5rem, 1.8rem + 2.8vw, 3.75rem);
+    }
+
+    /* El carrusel ocupa toda la altura de la banda (flush con los bordes). */
+    .cta__carousel {
+      align-self: stretch;
+      height: auto;
+    }
+
+    .cta__track {
+      position: absolute;
+      inset-inline: 0;
+      top: 0;
+      align-items: flex-end; /* alineadas a la derecha: borde a 82px (= pad izq.) */
+    }
+
+    .cta__slide {
+      display: block; /* se ven todas (bucle) */
+      /* 366px @1440 (Figma), escala con la pantalla. Borde dcho. a 82px. */
+      width: clamp(14rem, 25.4vw, 24rem);
+      max-width: none;
+      margin-inline: 0;
+    }
+  }
+</style>

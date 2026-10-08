@@ -112,6 +112,9 @@
   --inset-section: clamp(1.25rem, -0.13rem + 5.9vw, 7.625rem);
   /* Separación eyebrow ↔ título de sección (y título ↔ bloque adjunto): 30px @1440. */
   --gap-head: clamp(1rem, 0.69rem + 1.31vw, 1.875rem);
+  /* Padding vertical estándar de secciones (top = bottom): 40 → 60px (tope 60).
+     Excepciones: hero, CTA y footer. */
+  --section-py: clamp(2.5rem, 1.8rem + 3vw, 3.75rem);
 
   /* --- Radios --------------------------------------------------------------- */
   --radius-btn: 1.25rem; /* 20px — botones y píldoras */
@@ -149,6 +152,7 @@
 
   /* --- Movimiento (§9) ------------------------------------------------------ */
   --duration-base: 200ms;
+  --duration-slow: 400ms; /* despliegues amplios: acordeón FAQ, etc. */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -339,6 +343,7 @@
      neutralizarlos aquí desactiva el movimiento sin recurrir a !important (§5). */
   :root {
     --duration-base: 0.01ms;
+    --duration-slow: 0.01ms;
     --ease-out-soft: linear;
   }
 

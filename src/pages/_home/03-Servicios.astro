@@ -113,7 +113,7 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
                     </span>
                   </div>
 
-                  <a href={t.href} class="btn btn-primary services__more">
+                  <a href={t.href} class="btn btn-primary btn-sm services__more">
                     Leer más
                   </a>
                 </div>
@@ -129,7 +129,7 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
 <style>
   .services {
     background-color: var(--color-white);
-    padding-block: clamp(3rem, 1.5rem + 6vw, 6.25rem);
+    padding-block: var(--section-py);
   }
 
   .services__inner {
@@ -296,13 +296,11 @@ import { tratamientos, defaultTreatmentSlug } from '@/data/tratamientos';
     color: var(--color-black);
   }
 
-  /* Botón "Leer más": píldora completa, 18px (Figma). margin-top:auto lo
-     empuja al fondo del panel; align-self lo alinea a la derecha. */
+  /* Botón "Leer más": mismo tamaño que los CTA del hero (btn-sm).
+     margin-top:auto lo empuja al fondo del panel; align-self lo alinea dcha. */
   .services__more {
     align-self: flex-end;
     margin-top: auto;
-    font-size: var(--text-lead);
-    border-radius: 999px;
   }
 
   /* --- Escritorio (lg ≥ 1024px): lista | (imagen + panel) ------------- */

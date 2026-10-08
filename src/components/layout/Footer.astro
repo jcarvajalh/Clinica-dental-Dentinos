@@ -1,0 +1,313 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import { site } from '@/data/site';
+import {
+  footerTreatments,
+  footerResources,
+  footerLegal,
+} from '@/data/navigation';
+
+/*
+ * Footer global (§3, layout). Enlaces en src/data/navigation.ts; contacto y
+ * redes desde src/data/site.ts (§1). Iconos sociales y logo KIT-DIGITAL son
+ * assets reales en src/assets.
+ */
+const a = site.address;
+const addressLine = `${a.street} ${a.district}, ${a.postalCode}, ${a.city}`;
+const telHref = (n: string) => `tel:${n.replace(/[^\d+]/g, '')}`;
+const year = new Date().getFullYear();
+
+interface Social {
+  name: string;
+  href: string;
+  icon: string;
+  external?: boolean;
+}
+
+const socials: Social[] = [
+  { name: 'Facebook', href: site.social.facebook || '#', icon: 'facebook', external: true },
+  { name: 'Instagram', href: site.social.instagram || '#', icon: 'instagram', external: true },
+  { name: 'TikTok', href: site.social.tiktok || '#', icon: 'tiktok', external: true },
+  { name: 'YouTube', href: site.social.youtube || '#', icon: 'youtube', external: true },
+  { name: 'WhatsApp', href: site.whatsapp ? `https://wa.me/${site.whatsapp}` : '#', icon: 'whatsapp', external: true },
+  { name: 'Teléfono', href: site.phone ? telHref(site.phone) : '#', icon: 'telefono' },
+  { name: 'Email', href: site.email ? `mailto:${site.email}` : '#', icon: 'mail' },
+];
+---
+
+<footer class="footer">
+  <div class="footer__top">
+    {/* --- Marca --- */}
+    <div class="footer__brand">
+      <Image
+        src={img('dentinos-logo')}
+        alt="Clínica Dental Dentinos"
+        width={196}
+        class="footer__logo"
+      />
+      <p class="footer__about">
+        Clínica Dental en Teatinos, Málaga.<br /><br />
+        En Dentinos te cuidamos con un enfoque claro: salud primero, diagnóstico
+        preciso y un trato cercano.
+      </p>
+
+      <ul class="footer__socials" role="list">
+        {
+          socials.map((s) => (
+            <li>
+              <a
+                href={s.href}
+                class="footer__social"
+                aria-label={s.name}
+                {...(s.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                <Image src={img(s.icon)} alt="" width={24} height={24} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <Image
+        src={img('kit-digital')}
+        alt="Financiado por el Kit Digital y la Unión Europea (NextGenerationEU)"
+        width={300}
+        class="footer__kit"
+      />
+    </div>
+
+    {/* --- Tratamientos --- */}
+    <nav class="footer__col" aria-labelledby="footer-treatments">
+      <h2 id="footer-treatments" class="footer__title">Tratamientos</h2>
+      <ul class="footer__list" role="list">
+        {
+          footerTreatments.map((t) => (
+            <li>
+              <a href={t.href} class="footer__link">{t.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    {/* --- Contacto + Recursos --- */}
+    <div class="footer__col footer__col--stack">
+      <nav aria-labelledby="footer-contact">
+        <h2 id="footer-contact" class="footer__title">Contacto</h2>
+        <ul class="footer__list" role="list">
+          <li>
+            <a href={`mailto:${site.email}`} class="footer__link footer__link--underline">
+              {site.email}
+            </a>
+          </li>
+          <li>
+            <a href={telHref(site.phone)} class="footer__link">{site.phone}</a>
+          </li>
+          <li>
+            <a href={telHref(`+34 ${site.phoneLandline}`)} class="footer__link footer__link--underline">
+              {site.phoneLandline}
+            </a>
+          </li>
+          <li>
+            <a href={site.mapsUrl} class="footer__link footer__link--underline">{addressLine}</a>
+          </li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="footer-resources">
+        <h2 id="footer-resources" class="footer__title">Recursos</h2>
+        <ul class="footer__list" role="list">
+          {
+            footerResources.map((r) => (
+              <li>
+                <a href={r.href} class="footer__link">{r.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  {/* --- Barra inferior --- */}
+  <div class="footer__bottom">
+    <ul class="footer__legal" role="list">
+      {
+        footerLegal.map((l) => (
+          <li>
+            <a href={l.href} class="footer__legal-link">{l.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="footer__copy">© {year} Clínica Dental Dentinos.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-white);
+    padding-inline: var(--inset-section);
+    padding-block: clamp(2.5rem, 1.6rem + 3.6vw, 3.9375rem) clamp(1.5rem, 1rem + 2vw, 2.75rem);
+  }
+
+  /* --- Zona superior --------------------------------------------------- */
+  .footer__top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 1.5rem + 4vw, 4rem);
+  }
+
+  .footer__logo {
+    width: clamp(10rem, 8rem + 4vw, 12.25rem); /* ~196px @1440 */
+    height: auto;
+  }
+
+  .footer__about {
+    margin-top: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    max-width: 20rem; /* ~305px */
+    font-size: var(--text-body);
+    line-height: 1.19;
+    letter-spacing: -0.04em;
+    color: var(--color-black);
+  }
+
+  .footer__socials {
+    list-style: none;
+    padding: 0;
+    margin-top: clamp(1.5rem, 1rem + 2vw, 2.125rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(1rem, 0.7rem + 1.2vw, 1.4375rem); /* ~23px */
+  }
+
+  .footer__social {
+    display: inline-flex;
+    color: var(--color-black);
+    transition: color var(--duration-base) var(--ease-out-soft);
+  }
+
+  .footer__social :global(svg),
+  .footer__social :global(img) {
+    width: 1.5rem; /* 24px */
+    height: 1.5rem;
+  }
+
+  .footer__social:hover {
+    color: var(--color-blue-dark);
+  }
+
+  .footer__kit {
+    margin-top: clamp(1.5rem, 1rem + 2vw, 2.1875rem);
+    width: clamp(14rem, 12rem + 8vw, 18.75rem); /* ~300px @1440 */
+    height: auto;
+  }
+
+  /* --- Columnas de enlaces --------------------------------------------- */
+  .footer__title {
+    font-weight: 500;
+    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.125rem); /* 16 → 18px */
+    line-height: 1.17;
+    letter-spacing: -0.04em;
+    color: var(--color-black);
+  }
+
+  .footer__list {
+    list-style: none;
+    padding: 0;
+    margin-top: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.625rem, 0.5rem + 0.5vw, 0.6875rem); /* ~11px entre ítems */
+  }
+
+  .footer__col--stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  }
+
+  .footer__link {
+    font-size: var(--text-body);
+    line-height: 1.19;
+    letter-spacing: -0.04em;
+    color: var(--color-black);
+    transition: color var(--duration-base) var(--ease-out-soft);
+  }
+
+  .footer__link--underline {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .footer__link:hover {
+    color: var(--color-blue-dark);
+  }
+
+  /* --- Barra inferior -------------------------------------------------- */
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+    padding-top: clamp(1rem, 0.7rem + 1.2vw, 1.5rem);
+    border-top: 1px solid rgb(0 0 0 / 0.5);
+  }
+
+  .footer__legal {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem 1.5rem;
+  }
+
+  /* Separadores verticales entre enlaces legales (Figma). */
+  .footer__legal li {
+    position: relative;
+  }
+
+  .footer__legal li + li::before {
+    content: '';
+    position: absolute;
+    left: -0.75rem;
+    top: 50%;
+    height: 0.75rem;
+    border-left: 1px solid var(--color-black);
+    transform: translateY(-50%);
+  }
+
+  .footer__legal-link,
+  .footer__copy {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1.17;
+    letter-spacing: -0.04em;
+    color: var(--color-black);
+  }
+
+  .footer__legal-link {
+    transition: color var(--duration-base) var(--ease-out-soft);
+  }
+
+  .footer__legal-link:hover {
+    color: var(--color-blue-dark);
+  }
+
+  .footer__copy {
+    margin: 0;
+  }
+
+  /* --- Escritorio (lg): marca | tratamientos | contacto+recursos ------- */
+  @media (min-width: 64rem) {
+    .footer__top {
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      column-gap: clamp(3rem, 1rem + 5vw, 6.25rem);
+    }
+  }
+</style>

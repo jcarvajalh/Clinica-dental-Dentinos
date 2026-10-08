@@ -1,0 +1,196 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+---
+
+<section class="hero" aria-labelledby="nosotros-title">
+  <div class="hero__inner">
+    <h1 id="nosotros-title" class="hero__title">
+      Clínica dental moderna y <span class="hero__soft">acogedora</span>
+    </h1>
+
+    <!-- Collage en molinete (2×2) sobre la trama de puntos decorativa -->
+    <div class="hero__collage">
+      <Image
+        src={img('grid-puntos')}
+        alt=""
+        aria-hidden="true"
+        widths={[500, 800, 1200, 1600]}
+        sizes="(min-width: 1024px) 50vw, 90vw"
+        class="hero__dots"
+        loading="lazy"
+      />
+
+      <div class="hero__grid">
+        <div class="hero__row">
+          <Image
+            src={img('nosotros-collage-1')}
+            alt="Dos odontólogas de la Clínica Dental Dentinos atendiendo a una paciente en el gabinete"
+            widths={[208, 320, 416, 480]}
+            sizes="(min-width: 1024px) 15vw, 26vw"
+            class="hero__img hero__img--narrow"
+          />
+          <Image
+            src={img('nosotros-collage-2')}
+            alt="Equipo de doctores de la Clínica Dental Dentinos"
+            widths={[440, 660, 880, 980]}
+            sizes="(min-width: 1024px) 30vw, 52vw"
+            class="hero__img hero__img--wide"
+          />
+        </div>
+
+        <div class="hero__row">
+          <Image
+            src={img('nosotros-collage-3')}
+            alt="Equipo de higienistas y auxiliares de la Clínica Dental Dentinos"
+            widths={[440, 660, 880, 980]}
+            sizes="(min-width: 1024px) 30vw, 52vw"
+            class="hero__img hero__img--wide"
+          />
+          <Image
+            src={img('nosotros-collage-4')}
+            alt="Profesionales de la Clínica Dental Dentinos durante un tratamiento"
+            widths={[208, 320, 416, 480]}
+            sizes="(min-width: 1024px) 15vw, 26vw"
+            class="hero__img hero__img--narrow"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__body">
+      <p>
+        En Dentinos nos preocupamos por ofrecerte los mejores tratamientos con
+        materiales de alta calidad y una tecnología de última generación que nos
+        permite obtener resultados muy satisfactorios.
+      </p>
+      <p>
+        Contamos con doctores especializados, en continua formación y con la
+        última tecnología para poder ofrecer a nuestros pacientes los mejores
+        tratamientos. Nos volcamos en hacer que nuestros pacientes se encuentren
+        a gusto a través de un trato cercano, responsable y comprometido y
+        centrándose en una odontología basada en la salud.
+      </p>
+    </div>
+
+    <CtaButtons size="lg" class="hero__cta" />
+  </div>
+</section>
+
+<style>
+  .hero {
+    /* Degradado suave azul claro del Figma (aprox. con tokens de la paleta). */
+    background-image: linear-gradient(
+      180deg,
+      var(--color-white) 0%,
+      var(--color-blue-light) 45%,
+      var(--color-blue-light-active) 170%
+    );
+    /* Deja pasar el header fijo y recorta el sangrado de la trama de puntos. */
+    padding-top: calc(var(--header-height) + clamp(2.5rem, 1.5rem + 4vw, 5rem));
+    padding-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+    padding-inline: var(--inset-section);
+    overflow: hidden;
+  }
+
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* --- Titular (h1) ------------------------------------------------------ */
+  /* Ancho libre (una sola línea en escritorio, sin saltos forzados); sigue
+     creciendo por encima de 1440 (§6). */
+  .hero__title {
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    color: var(--color-blue-darker);
+    font-size: clamp(1.875rem, 1.39rem + 2.07vw, 4rem); /* 30 → 52px @1440 */
+  }
+
+  /* Palabra «acogedora» en azul más claro (AA texto grande sobre fondo claro). */
+  .hero__soft {
+    color: var(--color-blue-normal-active);
+  }
+
+  /* --- Collage ----------------------------------------------------------- */
+  /* La trama de puntos (793×692 en Figma) es el contenedor; las fotos van
+     centradas dentro, más pequeñas, dejando ver los puntos alrededor. */
+  .hero__collage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 49.5625rem; /* 793px */
+    aspect-ratio: 793 / 692;
+    margin-top: clamp(2rem, 1.2rem + 3.5vw, 4rem);
+  }
+
+  /* Trama de puntos: rellena el contenedor (misma proporción que su fuente). */
+  .hero__dots {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero__grid {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: 84.5%; /* 670 / 793: las fotos no llegan al borde de los puntos */
+    gap: var(--collage-gap, clamp(0.625rem, 0.4rem + 0.9vw, 1.375rem));
+  }
+
+  .hero__row {
+    display: flex;
+    gap: var(--collage-gap, clamp(0.625rem, 0.4rem + 0.9vw, 1.375rem));
+  }
+
+  /* Alto idéntico por fila: ambas fotos comparten alto nativo (437px), así que
+     repartir el ancho con flex en proporción 312:660 iguala sus alturas. La
+     costura cae en una x distinta en cada fila → efecto molinete. */
+  .hero__img {
+    min-width: 0;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+  }
+
+  .hero__img--narrow {
+    flex: 208 1 0;
+    aspect-ratio: 208 / 291;
+  }
+
+  .hero__img--wide {
+    flex: 440 1 0;
+    aspect-ratio: 440 / 291;
+  }
+
+  /* --- Cuerpo + CTA ------------------------------------------------------ */
+  .hero__body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 0.9rem + 1.4vw, 1.75rem);
+    max-width: 40rem; /* línea legible, texto centrado */
+    margin-top: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+    font-size: var(--text-lead);
+    line-height: var(--leading-lead);
+    color: var(--color-blue-dark-hover);
+  }
+
+  .hero__cta {
+    justify-content: center;
+    margin-top: clamp(1.25rem, 1.118rem + 0.563vw, 1.625rem); /* → 26px @1440 */
+  }
+</style>

@@ -1,0 +1,118 @@
+---
+/* «Ventajas frente a los expansores tradicionales» — 4 filas (título | texto)
+ * sobre blue-light-active. Contenido del Figma. */
+interface Ventaja {
+  title: string;
+  text: string;
+}
+
+const ventajas: Ventaja[] = [
+  {
+    title: 'Comodidad y estética mejorada',
+    text: 'El Invisalign Palatal Expander cuenta con un diseño transparente, suave y sin brackets metálicos, ofreciendo una alternativa más estética y cómoda que los expansores de paladar tradicionales.',
+  },
+  {
+    title: 'Seguridad y eficacia clínica comprobada',
+    text: 'Desarrollado por Align Technology, el Invisalign Palatal Expander es una solución avanzada de ortodoncia infantil, respaldada por estudios clínicos y diseñada para ofrecer resultados predecibles y duraderos.',
+  },
+  {
+    title: 'Facilidad de higiene y cuidado',
+    text: 'Al ser removible, facilita el cepillado y la limpieza diaria, ayudando a mantener una buena higiene bucal durante el tratamiento y reduciendo las dificultades asociadas a los expansores fijos.',
+  },
+  {
+    title: 'Tratamiento interceptivo que previene problemas futuros',
+    text: 'Utilizado durante la dentición mixta, permite tratar de forma temprana problemas como el apiñamiento dental y la mordida cruzada, favoreciendo un correcto desarrollo del maxilar y reduciendo complicaciones futuras.',
+  },
+];
+---
+
+<section class="adv" aria-labelledby="adv-title">
+  <div class="adv__inner">
+    <h2 id="adv-title" class="adv__title">
+      Ventajas frente a los expansores tradicionales
+    </h2>
+
+    <ul class="adv__list" role="list">
+      {
+        ventajas.map((v) => (
+          <li class="adv__row">
+            <h3 class="adv__row-title">{v.title}</h3>
+            <p class="adv__row-text">{v.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .adv {
+    background-color: var(--color-white);
+    padding-block: var(--section-py);
+  }
+
+  .adv__inner {
+    padding-inline: var(--inset-section);
+  }
+
+  .adv__title {
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.574rem + 0.751vw, 2.75rem); /* 28 → 36px @1440 */
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  /* --- Filas de ventajas ------------------------------------------------ */
+  .adv__list {
+    list-style: none;
+    padding: 0;
+    margin: clamp(2rem, 1.3rem + 2.8vw, 2.8125rem) auto 0; /* → 45px */
+    max-width: 60.75rem; /* 972px */
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem; /* 10px */
+  }
+
+  .adv__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 7.5rem; /* 120px */
+    padding: clamp(1.25rem, 0.9rem + 1.4vw, 1.625rem); /* ~26px */
+    background-color: var(--color-blue-light-active); /* #ACDFF0 */
+    border-radius: 1.25rem; /* 20px */
+  }
+
+  .adv__row-title {
+    font-weight: 500;
+    font-size: 1rem; /* 16px */
+    line-height: 1.19;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-active); /* #174075 */
+  }
+
+  .adv__row-text {
+    font-weight: 400;
+    font-size: 1rem; /* 16px */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-active);
+  }
+
+  /* --- Escritorio (≥768px): título | texto en una fila ------------------ */
+  @media (min-width: 768px) {
+    .adv__row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .adv__row-title {
+      flex: 465 1 0;
+    }
+    .adv__row-text {
+      flex: 454 1 0;
+    }
+  }
+</style>

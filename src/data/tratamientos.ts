@@ -41,7 +41,7 @@ export const tratamientos: Treatment[] = [
     price: 'Desde 1.800€',
     href: '/tratamientos/ortodoncia-invisible',
     children: [
-      { name: 'Expansor de paladar de Invisalign', href: '/tratamientos/ortodoncia-invisible/expansor-paladar' },
+      { name: 'Expansor de paladar de Invisalign', href: '/tratamientos/expansor-paladar' },
       { name: 'Invisalign First', href: '/tratamientos/ortodoncia-invisible/invisalign-first' },
       { name: 'Invisalign Teen', href: '/tratamientos/ortodoncia-invisible/invisalign-teen' },
       { name: 'Invisalign para adultos', href: '/tratamientos/ortodoncia-invisible/invisalign-adultos' },

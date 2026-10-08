@@ -1,0 +1,95 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+---
+
+<section class="thero" aria-labelledby="thero-title">
+  <div class="thero__inner">
+    <Image
+      src={img('expansor-paladar-hero')}
+      alt="Niña sonriente en el sillón dental durante una revisión de ortodoncia infantil en Dentinos"
+      widths={[440, 550, 760, 1100]}
+      sizes="(min-width: 640px) 550px, 90vw"
+      class="thero__media"
+      loading="eager"
+      fetchpriority="high"
+    />
+
+    <h1 id="thero-title" class="thero__title">
+      Expansor de paladar
+      <span class="thero__location">en Teatinos, Málaga</span>
+    </h1>
+
+    <p class="thero__text">
+      En Dentinos ofrecemos ortodoncia infantil avanzada para corregir problemas
+      dentales y de paladar desde edades tempranas. Contamos con Invisalign
+      Palatal Expander, una solución innovadora para la expansión del paladar en
+      niños de 6 a 11 años.
+    </p>
+
+    <div class="thero__cta">
+      <CtaButtons size="lg" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .thero {
+    background-color: var(--color-white);
+    /* Deja pasar el header fijo (sólido en esta página). */
+    padding-top: calc(var(--header-height) + clamp(1.5rem, 1rem + 2vw, 2.1875rem));
+    padding-bottom: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  .thero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .thero__media {
+    width: 100%;
+    max-width: 34.375rem; /* 550px */
+    aspect-ratio: 550 / 317;
+    object-fit: cover;
+    border-radius: 1.25rem; /* 20px */
+  }
+
+  .thero__title {
+    margin-top: clamp(1.25rem, 1.03rem + 0.939vw, 1.875rem); /* → 30px @1440 */
+    font-weight: 500;
+    font-size: clamp(2rem, 1.5rem + 2.1vw, 2.75rem); /* 32 → 44px @1440 */
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  /* Ubicación dentro del h1 (SEO): línea más pequeña bajo el título. */
+  .thero__location {
+    display: block;
+    margin-top: 0.25em;
+    font-size: 0.5em;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .thero__text {
+    max-width: 38rem; /* 608px: evita que «años.» quede solo en la última línea */
+    margin-top: clamp(1.25rem, 1.03rem + 0.939vw, 1.875rem); /* → 30px @1440 */
+    font-size: 1rem; /* 16px (Figma) */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    text-wrap: pretty; /* reparte mejor la última línea (sin huérfanas) */
+    color: var(--color-blue-dark-hover); /* #2A5685 */
+  }
+
+  .thero__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(1.25rem, 1.03rem + 0.939vw, 1.875rem); /* → 30px @1440 */
+  }
+</style>

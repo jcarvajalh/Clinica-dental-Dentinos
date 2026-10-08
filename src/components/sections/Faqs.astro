@@ -26,13 +26,15 @@ const titleId = `${id}-title`;
 
 <section class="faqs" aria-labelledby={titleId}>
   <div class="faqs__inner">
-    <header class="faqs__head">
-      <p class="eyebrow">{eyebrow}</p>
-      <h2 id={titleId} class="faqs__title">{title}</h2>
-    </header>
+    <div class="faqs__left">
+      <header class="faqs__head">
+        <p class="eyebrow">{eyebrow}</p>
+        <h2 id={titleId} class="faqs__title">{title}</h2>
+      </header>
 
-    <div class="faqs__aside">
-      <slot name="aside" />
+      <div class="faqs__aside">
+        <slot name="aside" />
+      </div>
     </div>
 
     <ul class="faqs__list" role="list">
@@ -98,18 +100,30 @@ const titleId = `${id}-title`;
     padding-inline: var(--inset-section);
   }
 
-  /* --- Cabecera (columna izquierda) ------------------------------------ */
+  /* --- Columna izquierda: título arriba, tarjeta aside debajo ----------- */
+  .faqs__left {
+    display: flex;
+    flex-direction: column;
+  }
+
   .faqs__head {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: clamp(1rem, 0.7rem + 1.2vw, 1.875rem);
+    /* Separación mínima garantizada entre el h2 y la tarjeta aside. */
+    margin-bottom: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  }
+
+  /* El aside baja hasta el fondo cuando hay espacio (lista más alta). */
+  .faqs__aside {
+    margin-top: auto;
   }
 
   .faqs__title {
-    font-weight: 400;
-    font-size: clamp(2rem, 1.65rem + 1.5vw, 3.75rem); /* 32 → 48px @1440 → 60px */
-    line-height: 1.19; /* 57/48 */
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.574rem + 0.751vw, 2.75rem); /* 28 → 36px @1440 → 44px */
+    line-height: 1.2;
     letter-spacing: -0.04em;
     color: var(--color-blue-darker);
   }
@@ -210,23 +224,13 @@ const titleId = `${id}-title`;
   @media (min-width: 56.25rem) {
     .faqs__inner {
       grid-template-columns: 450fr 671fr;
-      grid-template-rows: auto 1fr;
-      grid-template-areas:
-        'head list'
-        'aside list';
+      grid-template-areas: 'left list';
       column-gap: clamp(2.5rem, -2rem + 10vw, 9.6875rem); /* 155px @1440 */
-      row-gap: 0;
-      align-content: start;
+      align-items: stretch;
     }
 
-    .faqs__head {
-      grid-area: head;
-    }
-
-    .faqs__aside {
-      grid-area: aside;
-      align-self: end;
-      margin-bottom: clamp(0rem, -3rem + 4vw, 1.0625rem);
+    .faqs__left {
+      grid-area: left;
     }
 
     .faqs__list {

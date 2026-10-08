@@ -1,0 +1,204 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import { appointmentHref } from '@/data/site';
+
+/*
+ * «Lo que necesitas saber» — tarjeta blanca sobre fondo azul texturizado, con
+ * un panel acristalado y 5 beneficios en 2 columnas (orden intercalado para que
+ * el auto-flow del grid reproduzca el Figma: izq. 3, dcha. 2).
+ */
+interface Beneficio {
+  title: string;
+  text: string;
+}
+
+const beneficios: Beneficio[] = [
+  {
+    title: 'Expansor de paladar:',
+    text: 'Ocurre cuando los dientes superiores cierran por dentro de los dientes inferiores al morder. El expansor permite que la arcada superior encaje adecuadamente sobre la inferior.',
+  },
+  {
+    title: 'Mejorar la respiración nasal:',
+    text: 'Un paladar angosto suele estrechar las fosas nasales, provocando respiración bucal, ronquidos o apnea del sueño. Al expandir el maxilar, aumenta el flujo de aire por la nariz.',
+  },
+  {
+    title: 'Ganar espacio para los dientes definitivos:',
+    text: 'Al ensanchar el hueso, se reduce significativamente el apiñamiento dental, permitiendo que los dientes nuevos salgan en la posición correcta sin necesidad de realizar extracciones complejas.',
+  },
+  {
+    title: 'Evitar cirugías futuras:',
+    text: 'Al actuar de forma temprana (ortodoncia interceptiva), se guía el crecimiento óseo correctamente, previniendo tratamientos invasivos o cirugías maxilofaciales en la edad adulta.',
+  },
+  {
+    title: 'Prevenir dientes retenidos:',
+    text: 'Evita que piezas permanentes (como los caninos) se queden atrapadas dentro de la encía por falta de espacio.',
+  },
+];
+---
+
+<section class="know" aria-labelledby="know-title">
+  <div class="know__card">
+    <Image
+      src={img('fondo-tratamiento')}
+      alt=""
+      aria-hidden="true"
+      widths={[768, 1200, 1600, 1800]}
+      sizes="(min-width: 80rem) 1275px, 94vw"
+      class="know__bg"
+      loading="lazy"
+    />
+
+    <div class="know__content">
+    <header class="know__head">
+      <h2 id="know-title" class="know__title">
+        Lo que necesitas saber de un expansor de paladar
+      </h2>
+      <p class="know__intro">
+        El expansor de paladar, también llamado disyuntor palatino o maxilar, es
+        un dispositivo de ortodoncia que ensancha el maxilar superior cuando es
+        demasiado estrecho. Mediante una expansión gradual y controlada, ayuda a
+        corregir problemas de mordida, espacio y desarrollo óseo, favoreciendo un
+        adecuado crecimiento del maxilar.
+      </p>
+    </header>
+
+    <div class="know__panel">
+      <ul class="know__grid" role="list">
+        {
+          beneficios.map((b) => (
+            <li class="know__item">
+              <h3 class="know__item-title">{b.title}</h3>
+              <p class="know__item-text">{b.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="know__cta">
+      <a href={appointmentHref} class="btn btn-primary btn-sm">Agendar Cita</a>
+    </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .know {
+    padding-block: 0;
+    padding-inline: var(--inset-section);
+  }
+
+  /* --- Tarjeta (div principal): la textura azul es su fondo ------------- */
+  /* Llena todo el ancho de la sección (margen lateral = inset-section). */
+  .know__card {
+    position: relative;
+    border-radius: clamp(1.75rem, 1rem + 2.6vw, 3.125rem); /* → 50px */
+    overflow: hidden; /* recorta la imagen de fondo a las esquinas */
+  }
+
+  /* Imagen de fondo del div principal (recortada por el border-radius). */
+  .know__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  /* El contenido llena el ancho de la tarjeta; solo padding vertical de 40px. */
+  .know__content {
+    position: relative;
+    z-index: 1;
+    padding-block: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem); /* → 40px @1440 */
+    padding-inline: 0;
+  }
+
+  /* --- Cabecera (centrada) ---------------------------------------------- */
+  .know__head {
+    text-align: center;
+  }
+
+  .know__title {
+    max-width: 42rem;
+    margin-inline: auto;
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.574rem + 0.751vw, 2.75rem); /* 28 → 36px @1440 */
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .know__intro {
+    max-width: 33.625rem; /* 538px */
+    margin: clamp(1.25rem, 1rem + 1vw, 1.875rem) auto 0; /* → 30px */
+    font-size: 1rem; /* 16px */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- Panel acristalado con los beneficios ----------------------------- */
+  .know__panel {
+    max-width: 54.5625rem; /* 873px */
+    margin: clamp(1.5rem, 1rem + 2vw, 1.875rem) auto 0; /* → 30px */
+    padding: clamp(1.75rem, 1.1rem + 2.6vw, 2.75rem)
+      clamp(1.25rem, 0.8rem + 1.8vw, 2.25rem);
+    background-color: rgb(255 255 255 / 0.5);
+    box-shadow: 0 1px 5px rgb(0 0 0 / 0.25);
+    border-radius: 1.25rem; /* 20px */
+  }
+
+  .know__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  }
+
+  .know__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .know__item-title {
+    font-weight: 500;
+    font-size: 1rem; /* 16px */
+    line-height: 1.19;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .know__item-text {
+    font-size: 1rem; /* 16px */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- CTA --------------------------------------------------------------- */
+  .know__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+  }
+
+  /* Botón primario elevado, como el CTA del hero. */
+  .know__cta .btn-primary {
+    box-shadow: var(--shadow-btn);
+  }
+
+  /* --- Escritorio (≥768px): 2 columnas, auto-flow intercalado ----------- */
+  @media (min-width: 768px) {
+    .know__grid {
+      grid-template-columns: 1fr 1fr;
+      column-gap: clamp(1.5rem, 0.5rem + 2.5vw, 3rem);
+      row-gap: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+    }
+  }
+</style>

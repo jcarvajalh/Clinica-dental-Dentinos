@@ -1,0 +1,187 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+
+/* «¿Qué expansor recomendamos?» — 2 columnas: problemas que corrige (izq.) y
+ * tarjeta con imagen + explicación del Invisalign First (dcha.). */
+interface Problema {
+  title: string;
+  text: string;
+}
+
+const problemas: Problema[] = [
+  { title: 'Apiñamiento dental', text: 'Dientes apiñados o superpuestos.' },
+  {
+    title: 'Mordida cruzada',
+    text: 'Dientes superiores que muerden por dentro de los inferiores.',
+  },
+  {
+    title: 'Arcos dentales estrechos',
+    text: 'Falta de espacio para el correcto desarrollo dental.',
+  },
+];
+---
+
+<section class="rec" aria-labelledby="rec-title">
+  <div class="rec__grid">
+    <div class="rec__left">
+      <h2 id="rec-title" class="rec__title">
+        ¿Qué expansor de paladar solemos recomendar?
+      </h2>
+
+      <p class="rec__intro">
+        El nuevo <strong>Invisalign Palatal Expander</strong> representa un avance revolucionario
+        en la ortodoncia, especialmente diseñado para niños de entre 6 y 11 años.
+        Este dispositivo innovador expande el paladar de manera controlada, eficaz
+        y cómoda, corrigiendo problemas como:
+      </p>
+
+      <ul class="rec__problems" role="list">
+        {
+          problemas.map((p) => (
+            <li class="rec__card">
+              <h3 class="rec__card-title">{p.title}</h3>
+              <p class="rec__card-text">{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="rec__cta">
+        <CtaButtons size="lg" />
+      </div>
+    </div>
+
+    <div class="rec__detail">
+      <Image
+        src={img('expansor-recomendacion')}
+        alt="Revisión de la boca de un niño durante una valoración de ortodoncia infantil en Dentinos"
+        widths={[440, 619, 820, 1238]}
+        sizes="(min-width: 960px) 619px, 90vw"
+        class="rec__img"
+      />
+      <p class="rec__detail-text">
+        El <strong>Invisalign Palatal Expander</strong> forma parte del sistema
+        Invisalign First, creado para niños en fase de dentición mixta, cuando los
+        dientes de leche se caen y los permanentes erupcionan. Durante esta etapa,
+        los huesos maxilares están en crecimiento, lo que permite que el expansor
+        cree espacio para los dientes permanentes y guíe su desarrollo.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rec {
+    background-color: var(--color-white);
+    padding-block: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  .rec__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 1.2rem + 3vw, 3.75rem);
+    align-items: start;
+  }
+
+  /* --- Columna izquierda ------------------------------------------------ */
+  .rec__title {
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.574rem + 0.751vw, 2.75rem); /* 28 → 36px @1440 */
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker); /* igual que el h1 */
+  }
+
+  .rec__intro {
+    margin-top: clamp(1.25rem, 1rem + 1vw, 1.875rem);
+    font-size: 1rem; /* 16px */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-active); /* #174075 */
+  }
+
+  .rec__problems {
+    list-style: none;
+    padding: 0;
+    margin: clamp(1.25rem, 1rem + 1vw, 1.875rem) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem; /* 10px */
+  }
+
+  .rec__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: clamp(0.875rem, 0.65rem + 0.9vw, 1.25rem)
+      clamp(0.875rem, 0.7rem + 0.6vw, 1.125rem);
+    background-color: var(--color-blue-light); /* #F4FAFC */
+    border-radius: 1.25rem; /* 20px */
+  }
+
+  .rec__card-title {
+    font-weight: 500;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.19;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-active);
+  }
+
+  .rec__card-text {
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.19;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-active);
+  }
+
+  .rec__cta {
+    display: flex;
+    margin-top: clamp(1.5rem, 1.1rem + 1.6vw, 2.1875rem);
+  }
+
+  /* --- Columna derecha: tarjeta con imagen + explicación --------------- */
+  .rec__detail {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.6rem + 0.6vw, 0.9375rem);
+    padding: clamp(0.625rem, 0.5rem + 0.5vw, 0.8125rem);
+    background-color: var(--color-white);
+    border: 0.5px solid rgb(0 0 0 / 0.1);
+    box-shadow: 0 3px 20px rgb(0 0 0 / 0.25);
+    border-radius: 1.25rem; /* 20px */
+  }
+
+  .rec__img {
+    width: 100%;
+    aspect-ratio: 619 / 361;
+    object-fit: cover;
+    border-radius: 1.25rem; /* 20px */
+  }
+
+  .rec__detail-text {
+    padding: clamp(0.25rem, 0.1rem + 0.6vw, 0.75rem)
+      clamp(0.5rem, 0.3rem + 0.6vw, 0.9375rem)
+      clamp(0.75rem, 0.5rem + 0.8vw, 1.125rem);
+    font-size: 1rem; /* 16px */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-active);
+  }
+
+  .rec__detail-text strong {
+    font-weight: 500;
+  }
+
+  /* --- Escritorio (≥960px): dos columnas (541 | 645) ------------------- */
+  @media (min-width: 60rem) {
+    .rec__grid {
+      grid-template-columns: minmax(0, 541fr) minmax(0, 645fr);
+      column-gap: clamp(2.5rem, 0.5rem + 5vw, 5.6875rem); /* → 91px */
+    }
+  }
+</style>

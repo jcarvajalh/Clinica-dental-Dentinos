@@ -1,0 +1,126 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+
+/* «Beneficios del uso de carillas dentales» — foto (izq.) + lista numerada de 5
+ * beneficios (dcha.), sobre banda tintada. */
+const beneficios: string[] = [
+  'Blanquean dientes oscurecidos o muy manchados, sin necesidad de productos químicos.',
+  'Mejoran la alineación en dientes apiñados o con diastemas.',
+  'Consiguen una sonrisa simétrica y armónica.',
+  'Corrigen el tamaño y la forma de los dientes.',
+  'Revitalizan coronas y puentes antiguos, con un aspecto más joven y saludable.',
+];
+---
+
+<section class="benef" aria-labelledby="benef-title">
+  <div class="benef__grid">
+    <figure class="benef__media">
+      <Image
+        src={img('carillas-beneficios')}
+        alt="Paciente en la consulta durante la valoración previa a un tratamiento de carillas dentales"
+        widths={[440, 620, 820, 1080]}
+        sizes="(min-width: 60rem) 40vw, 92vw"
+        class="benef__img"
+        loading="lazy"
+      />
+    </figure>
+
+    <div class="benef__text">
+      <h2 id="benef-title" class="benef__title">
+        Beneficios del uso de carillas dentales
+      </h2>
+
+      <ol class="benef__list">
+        {
+          beneficios.map((b, i) => (
+            <li class="benef__item">
+              <span class="benef__n" aria-hidden="true">{i + 1}</span>
+              <p class="benef__text-p">{b}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .benef {
+    background-color: var(--color-blue-light-hover);
+    padding-block: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  .benef__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.75rem, 1.1rem + 2.6vw, 3.75rem);
+    align-items: center;
+  }
+
+  .benef__media {
+    margin: 0;
+  }
+
+  .benef__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+  }
+
+  .benef__title {
+    font-weight: 500;
+    font-size: var(--text-h2);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .benef__list {
+    list-style: none;
+    padding: 0;
+    margin: clamp(1.25rem, 1rem + 1vw, 1.75rem) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.6rem + 0.5vw, 1rem);
+  }
+
+  .benef__item {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 0.6rem + 0.6vw, 1.125rem);
+  }
+
+  .benef__n {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: clamp(2.25rem, 1.9rem + 1.5vw, 2.75rem);
+    aspect-ratio: 1;
+    font-weight: 500;
+    font-size: 1.125rem;
+    color: var(--color-blue-darker);
+    background-color: var(--color-blue-light-active);
+    border-radius: 50%;
+  }
+
+  .benef__text-p {
+    font-size: 1rem;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-active);
+  }
+
+  /* --- Escritorio (≥60rem): foto | lista ------------------------------- */
+  @media (min-width: 60rem) {
+    .benef__grid {
+      grid-template-columns: minmax(0, 460fr) minmax(0, 600fr);
+    }
+
+    .benef__img {
+      aspect-ratio: 460 / 520;
+    }
+  }
+</style>

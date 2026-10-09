@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+
+/* «¿Qué son las carillas dentales?» — foto a la izquierda, texto a la derecha,
+ * sobre banda tintada (blue-light-hover) para separar del hero blanco. */
+---
+
+<section class="ques" aria-labelledby="ques-title">
+  <div class="ques__grid">
+    <figure class="ques__media">
+      <Image
+        src={img('carillas-que-son')}
+        alt="Dentista comparando el color de los dientes con una guía de tonos para elegir las carillas dentales"
+        widths={[440, 620, 820, 1080]}
+        sizes="(min-width: 60rem) 45vw, 92vw"
+        class="ques__img"
+        loading="lazy"
+      />
+    </figure>
+
+    <div class="ques__text">
+      <h2 id="ques-title" class="ques__title">¿Qué son las carillas dentales?</h2>
+
+      <p class="ques__p">
+        Las carillas dentales son finas láminas cosméticas que se colocan en la
+        cara vestibular (delantera) de los dientes. Fabricadas con materiales de
+        alta calidad, imitan a la perfección el aspecto de un diente natural y
+        transforman por completo la estética de tu sonrisa.
+      </p>
+      <p class="ques__p">
+        Se han convertido en uno de los tratamientos estéticos más demandados
+        porque ofrecen resultados eficaces en muy poco tiempo y sin cirugía, por
+        lo que no suponen ninguna molestia.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ques {
+    background-color: var(--color-blue-light-hover);
+    padding-block: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  .ques__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.75rem, 1.1rem + 2.6vw, 3.75rem);
+    align-items: center;
+  }
+
+  .ques__media {
+    margin: 0;
+  }
+
+  .ques__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+  }
+
+  .ques__title {
+    font-weight: 500;
+    font-size: var(--text-h2); /* 26 → 36px @1440 */
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .ques__p {
+    margin-top: clamp(1rem, 0.8rem + 0.9vw, 1.375rem);
+    font-size: var(--text-lead);
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- Escritorio (≥60rem): foto | texto ------------------------------- */
+  @media (min-width: 60rem) {
+    .ques__grid {
+      grid-template-columns: minmax(0, 520fr) minmax(0, 560fr);
+    }
+
+    .ques__img {
+      aspect-ratio: 520 / 480;
+    }
+  }
+</style>

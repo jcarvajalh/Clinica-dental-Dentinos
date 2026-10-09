@@ -1,0 +1,131 @@
+---
+/* «¿Cuál es el proceso de colocación de carillas?» — 5 pasos numerados como una
+ * línea de tiempo (<ol>). Sección sin foto: el ritmo lo marca la numeración. */
+interface Paso {
+  title: string;
+  text: string;
+}
+
+const pasos: Paso[] = [
+  {
+    title: 'Evaluación inicial y planificación',
+    text: 'Realizamos una valoración dental completa, hablamos de tus expectativas y decidimos si las carillas son adecuadas. Tomamos radiografías y fotografías para planificar el tratamiento.',
+  },
+  {
+    title: 'Preparación de los dientes',
+    text: 'Retiramos una cantidad mínima de esmalte de la superficie frontal para alojar la carilla con seguridad y tomamos impresiones para fabricarla a medida.',
+  },
+  {
+    title: 'Fabricación de las carillas',
+    text: 'En el laboratorio se elaboran las carillas de porcelana o composite según el modelo, eligiendo con cuidado el color y la forma para lograr la apariencia deseada.',
+  },
+  {
+    title: 'Colocación de las carillas',
+    text: 'Las probamos para comprobar el ajuste y, una vez validadas, las adherimos de forma permanente con un cemento dental especial y luz de polimerización.',
+  },
+  {
+    title: 'Ajustes finales y pulido',
+    text: 'Afinamos la mordida para que todo encaje con comodidad y pulimos carillas y dientes hasta obtener un resultado suave y natural.',
+  },
+];
+---
+
+<section class="proc" aria-labelledby="proc-title">
+  <div class="proc__inner">
+    <h2 id="proc-title" class="proc__title">
+      ¿Cuál es el proceso de colocación de carillas?
+    </h2>
+
+    <ol class="proc__list">
+      {
+        pasos.map((p, i) => (
+          <li class="step">
+            <span class="step__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div class="step__body">
+              <h3 class="step__title">{p.title}</h3>
+              <p class="step__text">{p.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .proc {
+    background-color: var(--color-blue-light-hover);
+    padding-block: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  /* Sin max-width: el titular usa todo el ancho de .proc__inner y cabe en una
+     sola línea en escritorio (envuelve solo en pantallas pequeñas). */
+  .proc__title {
+    font-weight: 500;
+    font-size: var(--text-h2);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .proc__list {
+    list-style: none;
+    padding: 0;
+    margin: clamp(2rem, 1.4rem + 2.4vw, 3rem) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.875rem, 0.6rem + 1.1vw, 1.25rem);
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(1rem, 0.7rem + 1.2vw, 1.75rem);
+    padding: clamp(1.25rem, 0.9rem + 1.4vw, 1.75rem);
+    background-color: var(--color-white);
+    border-radius: var(--radius-media);
+  }
+
+  .step__n {
+    flex-shrink: 0;
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-normal);
+  }
+
+  .step__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .step__title {
+    font-weight: 500;
+    font-size: var(--text-card-title);
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .step__text {
+    font-size: 1rem;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- Escritorio (≥64rem): los pasos ocupan todo el ancho de .proc__inner --- */
+  @media (min-width: 64rem) {
+    .step {
+      align-items: center;
+    }
+
+    .step__n {
+      width: 3.5rem;
+      text-align: center;
+    }
+  }
+</style>

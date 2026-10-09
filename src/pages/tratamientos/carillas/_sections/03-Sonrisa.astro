@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+
+/* «Sonrisa perfecta con carillas dentales» — texto + checklist de rasgos de una
+ * dentadura equilibrada (izq.) y foto (dcha.). CTA simple «Pedir cita». */
+const rasgos: string[] = [
+  'Tamaño de los dientes en equilibrio con las encías.',
+  'Dentadura blanca y brillante.',
+  'Dientes alineados y sin espacios entre ellos.',
+  'Mordida correcta, sin que la arcada superior se superponga a la inferior.',
+];
+---
+
+<section class="smile" aria-labelledby="smile-title">
+  <div class="smile__grid">
+    <div class="smile__text">
+      <h2 id="smile-title" class="smile__title">
+        Sonrisa perfecta con carillas dentales
+      </h2>
+
+      <p class="smile__intro">
+        La belleza es subjetiva y depende de muchos factores, pero existen unos
+        cánones estéticos ampliamente aceptados. En estética bucodental, estos
+        son los rasgos de una dentadura equilibrada:
+      </p>
+
+      <ul class="smile__list" role="list">
+        {
+          rasgos.map((r) => (
+            <li class="smile__item">
+              <svg class="smile__check" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                <path
+                  d="M5 12.5l4.5 4.5L19 7"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>{r}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="smile__cta">
+        <CtaButtons size="lg" />
+      </div>
+    </div>
+
+    <figure class="smile__media">
+      <Image
+        src={img('carillas-sonrisa')}
+        alt="Mujer joven con una sonrisa natural y armónica tras mejorar la estética de sus dientes"
+        widths={[440, 620, 820, 1080]}
+        sizes="(min-width: 60rem) 42vw, 92vw"
+        class="smile__img"
+        loading="lazy"
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .smile {
+    background-color: var(--color-white);
+    padding-block: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  .smile__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.75rem, 1.1rem + 2.6vw, 3.75rem);
+    align-items: center;
+  }
+
+  .smile__title {
+    font-weight: 500;
+    font-size: var(--text-h2);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .smile__intro {
+    margin-top: clamp(1rem, 0.8rem + 0.9vw, 1.375rem);
+    font-size: var(--text-lead);
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .smile__list {
+    list-style: none;
+    padding: 0;
+    margin: clamp(1.25rem, 1rem + 1vw, 1.75rem) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.6rem + 0.5vw, 1rem);
+  }
+
+  .smile__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-active);
+  }
+
+  .smile__check {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0.1875rem;
+    margin-top: -0.0625rem;
+    color: var(--color-blue-dark-active);
+    background-color: var(--color-blue-light-active);
+    border-radius: 50%;
+  }
+
+  .smile__cta {
+    display: flex;
+    margin-top: clamp(1.5rem, 1.1rem + 1.6vw, 2.1875rem);
+  }
+
+  .smile__media {
+    margin: 0;
+    order: -1; /* en móvil la foto va arriba */
+  }
+
+  .smile__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+  }
+
+  /* --- Escritorio (≥60rem): texto | foto ------------------------------- */
+  @media (min-width: 60rem) {
+    .smile__grid {
+      grid-template-columns: minmax(0, 580fr) minmax(0, 480fr);
+    }
+
+    .smile__media {
+      order: 0; /* foto a la derecha */
+    }
+
+    .smile__img {
+      aspect-ratio: 480 / 520;
+    }
+  }
+</style>

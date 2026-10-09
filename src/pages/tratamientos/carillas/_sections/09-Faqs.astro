@@ -1,0 +1,86 @@
+---
+import Faqs from '@/components/sections/Faqs.astro';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+
+/* Instancia de FAQ para «Carillas dentales». Preguntas y respuestas derivadas
+ * del contenido real del tratamiento (buen SEO: alimentan el JSON-LD FAQPage). */
+const faqs = [
+  {
+    question: '¿Qué son las carillas dentales?',
+    answer:
+      'Son finas láminas cosméticas que se colocan en la cara delantera de los dientes para transformar su color, forma, tamaño y posición, imitando el aspecto de un diente natural.',
+  },
+  {
+    question: '¿Cuánto se tarda en colocarlas?',
+    answer:
+      'Es un tratamiento rápido: las carillas de composite se aplican en una sola visita, mientras que las de porcelana suelen requerir dos. En pocas sesiones consigues el resultado deseado.',
+  },
+  {
+    question: '¿Qué tipo de carilla me conviene?',
+    answer:
+      'Depende de tus necesidades, la ubicación de los dientes, el presupuesto y la recomendación del odontólogo. En tu primera visita valoramos el caso y te aconsejamos la opción más adecuada.',
+  },
+  {
+    question: '¿Cuánto duran las carillas dentales?',
+    answer:
+      'Con una buena higiene y revisiones periódicas son muy duraderas. Conviene evitar sobrecargarlas: si una se desprende puede recolocarse y, si se fractura, se sustituye por una nueva.',
+  },
+  {
+    question: '¿En qué casos están recomendadas?',
+    answer:
+      'En diastemas o espacios entre dientes, manchas que no mejoran con blanqueamiento, dientes pequeños o desgastados, sonrisas poco llamativas y otros problemas estéticos como la sonrisa gingival.',
+  },
+];
+
+// JSON-LD FAQPage (§10.2): mismas preguntas/respuestas que se muestran.
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+<Faqs
+  id="faqs-carillas"
+  title="Resuelve tus dudas sobre las carillas dentales."
+  faqs={faqs}
+>
+  <div class="faq-aside" slot="aside">
+    <h3 class="faq-aside__title">¿Tienes otra pregunta?</h3>
+    <p class="faq-aside__text">
+      Resolvemos tus dudas por teléfono, WhatsApp o en la clínica. Pide tu
+      primera visita y valoramos tu caso para diseñar la sonrisa que buscas.
+    </p>
+    <CtaButtons size="lg" />
+  </div>
+</Faqs>
+
+<style>
+  .faq-aside {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1.125rem);
+  }
+
+  .faq-aside__title {
+    font-weight: 500;
+    font-size: var(--text-h3);
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .faq-aside__text {
+    max-width: 23rem;
+    font-size: var(--text-lead);
+    line-height: 1.17;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-hover);
+  }
+</style>

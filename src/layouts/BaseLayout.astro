@@ -38,6 +38,9 @@ const { title, description, solidHeader = false } = Astro.props;
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap"
       rel="stylesheet"
     />
+
+    {/* Metadatos extra por página (canonical, JSON-LD, OG…). */}
+    <slot name="head" />
   </head>
   <body>
     <a href="#main-content" class="skip-link">Saltar al contenido</a>

@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+
+/* «¿Cuándo se ponen las carillas dentales?» — indicaciones (izq.) + foto (dcha.).
+ * Las indicaciones van como título + detalle en lista. */
+interface Indicacion {
+  title: string;
+  text: string;
+}
+
+const indicaciones: Indicacion[] = [
+  { title: 'Diastemas', text: 'Espacios interdentales o dientes separados.' },
+  { title: 'Tinciones dentales', text: 'Manchas que no se han podido eliminar con un blanqueamiento.' },
+  { title: 'Dientes pequeños', text: 'Piezas acortadas o desgastadas con el paso del tiempo.' },
+  { title: 'Sonrisas poco llamativas', text: 'Se potencian con un diseño de sonrisa previo.' },
+  { title: 'Otros problemas estéticos', text: 'Como la sonrisa gingival.' },
+];
+---
+
+<section class="when" aria-labelledby="when-title">
+  <div class="when__grid">
+    <div class="when__text">
+      <h2 id="when-title" class="when__title">
+        ¿Cuándo se ponen las carillas dentales?
+      </h2>
+
+      <p class="when__intro">
+        En la Clínica Dental Dentinos realizamos primero una revisión completa
+        de tu salud bucodental y elaboramos un diagnóstico y un plan de
+        tratamiento personalizados. Las carillas son una buena opción para
+        conseguir la sonrisa que deseas en pocas sesiones, y se recomiendan en
+        casos como:
+      </p>
+
+      <ul class="when__list" role="list">
+        {
+          indicaciones.map((i) => (
+            <li class="when__item">
+              <h3 class="when__item-title">{i.title}</h3>
+              <p class="when__item-text">{i.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="when__cta">
+        <CtaButtons size="lg" />
+      </div>
+    </div>
+
+    <figure class="when__media">
+      <Image
+        src={img('carillas-cuando')}
+        alt="Comparación del tono de los dientes de un paciente con una guía de color antes de colocar las carillas"
+        widths={[440, 620, 820, 1080]}
+        sizes="(min-width: 60rem) 42vw, 92vw"
+        class="when__img"
+        loading="lazy"
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .when {
+    background-color: var(--color-white);
+    padding-block: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  .when__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.75rem, 1.1rem + 2.6vw, 3.75rem);
+    align-items: center;
+  }
+
+  .when__title {
+    font-weight: 500;
+    font-size: var(--text-h2);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .when__intro {
+    margin-top: clamp(1rem, 0.8rem + 0.9vw, 1.375rem);
+    font-size: var(--text-lead);
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .when__list {
+    list-style: none;
+    padding: 0;
+    margin: clamp(1.25rem, 1rem + 1vw, 1.75rem) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .when__item {
+    padding: clamp(0.75rem, 0.6rem + 0.5vw, 1rem) clamp(0.875rem, 0.7rem + 0.6vw, 1.125rem);
+    background-color: var(--color-blue-light);
+    border-left: 3px solid var(--color-blue-normal);
+    border-radius: 0.75rem;
+  }
+
+  .when__item-title {
+    font-weight: 500;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-active);
+  }
+
+  .when__item-text {
+    margin-top: 0.125rem;
+    font-size: 1rem;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .when__cta {
+    display: flex;
+    margin-top: clamp(1.5rem, 1.1rem + 1.6vw, 2.1875rem);
+  }
+
+  .when__media {
+    margin: 0;
+    order: -1;
+  }
+
+  .when__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+  }
+
+  /* --- Escritorio (≥60rem): foto | texto ------------------------------- */
+  @media (min-width: 60rem) {
+    .when__grid {
+      grid-template-columns: minmax(0, 480fr) minmax(0, 580fr);
+    }
+
+    /* La foto mantiene order:-1 → queda en la 1.ª columna (izquierda). */
+    .when__img {
+      aspect-ratio: 480 / 560;
+    }
+  }
+</style>

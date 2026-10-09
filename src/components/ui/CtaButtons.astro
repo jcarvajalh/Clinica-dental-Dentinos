@@ -35,4 +35,28 @@ const btnSize = size === 'sm' ? 'btn-xs' : 'btn-sm';
   .cta-pair--lg .btn-primary {
     box-shadow: var(--shadow-btn);
   }
+
+  /* Animación sutil al pasar el cursor: el botón se eleva ligeramente.
+     Solo transform (§9); se suma a la transición de color heredada de .btn. */
+  .cta-pair .btn {
+    transition: background-color var(--duration-base) var(--ease-out-soft),
+      color var(--duration-base) var(--ease-out-soft),
+      transform var(--duration-base) var(--ease-out-soft);
+  }
+
+  .cta-pair .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .cta-pair .btn:active {
+    transform: translateY(0);
+  }
+
+  /* Sin movimiento si el usuario lo pide (§9, §11). */
+  @media (prefers-reduced-motion: reduce) {
+    .cta-pair .btn:hover,
+    .cta-pair .btn:active {
+      transform: none;
+    }
+  }
 </style>

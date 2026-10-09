@@ -1,0 +1,162 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import CtaButtons from '@/components/ui/CtaButtons.astro';
+
+/*
+ * Hero de «Carillas dentales». Diseño propio (no replica el hero centrado del
+ * expansor): dos columnas asimétricas — texto a la izquierda, foto grande a la
+ * derecha con botón de reproducción de vídeo (el vídeo real está [PENDIENTE]).
+ */
+---
+
+<section class="chero" aria-labelledby="chero-title">
+  <div class="chero__grid">
+    <div class="chero__text">
+      <h1 id="chero-title" class="chero__title">
+        Carillas dentales
+        <span class="chero__location">en Teatinos, Málaga</span>
+      </h1>
+
+      <p class="chero__lead">
+        Las carillas dentales transforman el tamaño, el color, la forma y la
+        posición de tus dientes para conseguir una sonrisa armónica. Se colocan
+        en pocas sesiones y ofrecen un resultado natural y muy eficaz frente a
+        otros tratamientos de estética dental.
+      </p>
+
+      <div class="chero__cta">
+        <CtaButtons size="lg" />
+      </div>
+    </div>
+
+    <figure class="chero__media">
+      <Image
+        src={img('carillas-hero')}
+        alt="Primer plano de una sonrisa con dientes blancos y alineados tras un tratamiento de carillas dentales"
+        widths={[440, 660, 880, 1200]}
+        sizes="(min-width: 64rem) 46vw, 92vw"
+        class="chero__img"
+        loading="eager"
+        fetchpriority="high"
+      />
+      {/* TODO: abrir el vídeo real del tratamiento al pulsar (lightbox) — [VÍDEO PENDIENTE]. */}
+      <button type="button" class="chero__play" aria-label="Reproducir vídeo sobre las carillas dentales">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+          <path d="M8 5.5v13l11-6.5-11-6.5Z" fill="currentColor" />
+        </svg>
+      </button>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .chero {
+    background-color: var(--color-white);
+    /* Deja pasar el header fijo (sólido en esta página). */
+    padding-top: calc(var(--header-height) + clamp(1.5rem, 1rem + 2vw, 2.5rem));
+    padding-bottom: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  .chero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 1.2rem + 3vw, 3.75rem);
+    align-items: center;
+  }
+
+  .chero__title {
+    font-weight: 500;
+    font-size: clamp(2.25rem, 1.6rem + 2.8vw, 3.5rem); /* 36 → 56px @1440 */
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  /* Ubicación dentro del h1 (SEO), en línea menor. */
+  .chero__location {
+    display: block;
+    margin-top: 0.3em;
+    font-size: 0.45em;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .chero__lead {
+    max-width: 34rem;
+    margin-top: clamp(1.25rem, 1rem + 1vw, 1.875rem);
+    font-size: var(--text-lead); /* 16 → 18px */
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .chero__cta {
+    display: flex;
+    margin-top: clamp(1.5rem, 1.1rem + 1.6vw, 2.1875rem);
+  }
+
+  /* --- Media con botón de play ----------------------------------------- */
+  .chero__media {
+    position: relative;
+    margin: 0;
+  }
+
+  .chero__img {
+    width: 100%;
+    aspect-ratio: 16 / 11;
+    object-fit: cover;
+    border-radius: var(--radius-media);
+  }
+
+  .chero__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    width: clamp(3.5rem, 2.8rem + 3vw, 5rem);
+    aspect-ratio: 1;
+    color: var(--color-blue-darker);
+    background-color: var(--color-surface-glass);
+    border: 0.5px solid var(--color-border-glass);
+    border-radius: 50%;
+    box-shadow: var(--shadow-glass);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-base) var(--ease-out-soft),
+      transform var(--duration-base) var(--ease-out-soft);
+  }
+
+  .chero__play svg {
+    width: 42%;
+    height: 42%;
+    margin-left: 6%; /* centra ópticamente el triángulo */
+  }
+
+  .chero__play:hover {
+    background-color: var(--color-white);
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chero__play:hover {
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  /* --- Escritorio (≥64rem): texto | foto (asimétrico) ------------------ */
+  @media (min-width: 64rem) {
+    .chero__grid {
+      grid-template-columns: minmax(0, 520fr) minmax(0, 620fr);
+    }
+
+    .chero__img {
+      aspect-ratio: 620 / 460;
+    }
+  }
+</style>

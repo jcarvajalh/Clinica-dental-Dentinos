@@ -1,0 +1,149 @@
+---
+/* «Tipos de carillas dentales» — 5 tarjetas numeradas (01–05). Sección sin foto
+ * propia: el peso visual lo llevan las tarjetas con número grande. */
+interface Tipo {
+  n: string;
+  title: string;
+  text: string;
+}
+
+const tipos: Tipo[] = [
+  {
+    n: '01',
+    title: 'Carillas de porcelana',
+    text: 'Fabricadas a medida en laboratorio, destacan por su durabilidad y apariencia natural. Requieren un desgaste mínimo del esmalte, resisten las manchas y conservan su color. Su acabado translúcido imita el diente natural; suelen necesitar dos visitas.',
+  },
+  {
+    n: '02',
+    title: 'Carillas de composite',
+    text: 'También llamadas directas o de resina, se elaboran y aplican en la clínica en una sola visita. Son más económicas, exigen una preparación mínima del esmalte y resultan fáciles de reparar o retocar con el tiempo.',
+  },
+  {
+    n: '03',
+    title: 'Cerámica con disilicato de litio',
+    text: 'Cerámica reforzada, conocida por su resistencia y durabilidad. Ideal cuando se necesita más resistencia —como en dientes posteriores— manteniendo un grosor muy fino que minimiza la preparación del diente natural.',
+  },
+  {
+    n: '04',
+    title: 'Carillas de zirconio',
+    text: 'Material extremadamente resistente y duradero, ideal para dientes posteriores o cuando se requiere soportar grandes fuerzas masticatorias sin renunciar a una sonrisa estética.',
+  },
+  {
+    n: '05',
+    title: 'Carillas feldespáticas',
+    text: 'Las de mejores propiedades estéticas y ópticas. Logran resultados totalmente naturales que imitan el esmalte y presentan una resistencia a la fractura superior a la del propio esmalte dental.',
+  },
+];
+---
+
+<section class="types" aria-labelledby="types-title">
+  <div class="types__inner">
+    <header class="types__head">
+      <h2 id="types-title" class="types__title">Tipos de carillas dentales</h2>
+      <p class="types__intro">
+        La elección del tipo de carilla depende de las necesidades del paciente,
+        la ubicación de los dientes, el presupuesto y la recomendación del
+        odontólogo. Cada opción tiene sus ventajas, por eso conviene valorarlas
+        con un profesional para decidir la más adecuada.
+      </p>
+    </header>
+
+    <ul class="types__grid" role="list">
+      {
+        tipos.map((t) => (
+          <li class="type-card">
+            <span class="type-card__n" aria-hidden="true">{t.n}</span>
+            <h3 class="type-card__title">{t.title}</h3>
+            <p class="type-card__text">{t.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .types {
+    background-color: var(--color-blue-light-hover);
+    padding-block: var(--section-py);
+    padding-inline: var(--inset-section);
+  }
+
+  .types__head {
+    max-width: 46rem;
+  }
+
+  .types__title {
+    font-weight: 500;
+    font-size: var(--text-h2);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .types__intro {
+    margin-top: var(--gap-head);
+    font-size: var(--text-lead);
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .types__grid {
+    list-style: none;
+    padding: 0;
+    margin: clamp(2rem, 1.4rem + 2.4vw, 3rem) 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(0.875rem, 0.6rem + 1.1vw, 1.25rem);
+  }
+
+  .type-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: clamp(1.5rem, 1.1rem + 1.6vw, 2rem);
+    background-color: var(--color-white);
+    border-radius: var(--radius-media);
+    box-shadow: var(--shadow-badge);
+  }
+
+  .type-card__n {
+    font-weight: 500;
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-normal);
+  }
+
+  .type-card__title {
+    margin-top: 0.25rem;
+    font-weight: 500;
+    font-size: var(--text-card-title);
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .type-card__text {
+    font-size: 1rem;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- Tablet (≥40rem): 2 columnas ------------------------------------- */
+  @media (min-width: 40rem) {
+    .types__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* --- Escritorio (≥64rem): 3 columnas (3 arriba, 2 abajo) ------------- */
+  @media (min-width: 64rem) {
+    .types__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

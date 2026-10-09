@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { site } from '@/data/site';
+import Hero from './_sections/01-Hero.astro';
+import QueSon from './_sections/02-QueSon.astro';
+import Sonrisa from './_sections/03-Sonrisa.astro';
+import Tipos from './_sections/04-Tipos.astro';
+import Cuando from './_sections/05-Cuando.astro';
+import Proceso from './_sections/06-Proceso.astro';
+import Duracion from './_sections/07-Duracion.astro';
+import Beneficios from './_sections/08-Beneficios.astro';
+import FaqsCarillas from './_sections/09-Faqs.astro';
+import CtaCarillas from './_sections/10-Cta.astro';
+
+// JSON-LD de servicio médico (§10.2): describe el tratamiento para buscadores/IA.
+const pageUrl = new URL('/tratamientos/carillas', site.domain).href;
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalProcedure',
+  name: 'Carillas dentales',
+  alternateName: ['Carillas de porcelana', 'Carillas de composite', 'Veneers dentales'],
+  procedureType: 'https://schema.org/NoninvasiveProcedure',
+  bodyLocation: 'Dientes',
+  howPerformed:
+    'Finas láminas cosméticas que se adhieren a la cara vestibular del diente para corregir color, forma, tamaño y posición, logrando una sonrisa armónica.',
+  url: pageUrl,
+  provider: {
+    '@type': 'Dentist',
+    name: site.legalName,
+    telephone: site.phone,
+    email: site.email,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: site.address.street,
+      addressLocality: site.address.city,
+      postalCode: site.address.postalCode,
+      addressRegion: site.address.region,
+      addressCountry: 'ES',
+    },
+  },
+};
+---
+
+<BaseLayout
+  title="Carillas dentales en Teatinos, Málaga | Dentinos"
+  description="Carillas dentales de porcelana, composite y zirconio en Teatinos, Málaga. Transforma tu sonrisa en pocas sesiones y sin cirugía. Pide cita en Dentinos."
+  solidHeader
+>
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(serviceSchema)}
+    slot="head"
+  />
+
+  <Hero />
+  <QueSon />
+  <Sonrisa />
+  <Tipos />
+  <Cuando />
+  <Proceso />
+  <Duracion />
+  <Beneficios />
+  <FaqsCarillas />
+  <CtaCarillas />
+</BaseLayout>

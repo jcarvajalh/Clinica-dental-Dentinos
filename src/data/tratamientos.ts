@@ -84,7 +84,7 @@ export const tratamientos: Treatment[] = [
     image: 'servicio-odontologia-estetica',
     href: '/tratamientos/estetica-dental',
     children: [
-      { name: 'Carillas dentales', href: '/tratamientos/estetica-dental/carillas' },
+      { name: 'Carillas dentales', href: '/tratamientos/carillas' },
       { name: 'Carillas de composite', href: '/tratamientos/estetica-dental/carillas-composite' },
       { name: 'Carillas de porcelana', href: '/tratamientos/estetica-dental/carillas-porcelana' },
       { name: 'Blanqueamiento dental', href: '/tratamientos/estetica-dental/blanqueamiento' },

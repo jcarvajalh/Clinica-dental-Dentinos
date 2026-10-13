@@ -84,8 +84,8 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
                 <Image
                   src={img(t.image)}
                   alt={`Tratamiento de ${t.name.toLowerCase()} en la Clínica Dental Dentinos`}
-                  widths={[300, 417, 600, 834]}
-                  sizes="(min-width: 1024px) 30vw, 90vw"
+                  widths={[600, 834, 1200, 1600, 1920]}
+                  sizes="(min-width: 1024px) 60vw, 100vw"
                   class="services__photo"
                   data-svc-media={t.slug}
                   hidden={!active}
@@ -118,20 +118,18 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
                   tabindex="0"
                   hidden={!active}
                 >
-                  <p class="services__desc">
-                    {t.description ? (
-                      <>
-                        {t.description}{' '}
-                        {t.descriptionAccent && (
-                          <em class="accent">{t.descriptionAccent}</em>
-                        )}
-                      </>
-                    ) : (
-                      <span class="services__pending">
-                        [TEXTO PENDIENTE — descripción de {t.name}]
-                      </span>
+                  <div class="services__copy">
+                    {t.panelTitle && (
+                      <h3 class="services__panel-title">{t.panelTitle}</h3>
                     )}
-                  </p>
+                    {t.description ? (
+                      <p class="services__desc">{t.description}</p>
+                    ) : (
+                      <p class="services__desc services__pending">
+                        [TEXTO PENDIENTE — descripción de {t.name}]
+                      </p>
+                    )}
+                  </div>
 
                   <div class="services__specialists">
                     <ul class="services__avatars" aria-hidden="true">
@@ -369,16 +367,25 @@ import CtaButtons from '@/components/ui/CtaButtons.astro';
     display: none;
   }
 
+  .services__copy {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1rem);
+  }
+
+  .services__panel-title {
+    font-size: var(--text-card-title); /* 20px @1440 */
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
   .services__desc {
     font-size: var(--text-lead); /* 18px @1440 */
     line-height: 1.6;
     letter-spacing: -0.04em;
     color: var(--color-blue-dark-hover);
-  }
-
-  /* «Sonrisa.» va más grande que el cuerpo del panel. */
-  .services__desc .accent {
-    font-size: var(--text-h3); /* 24px @1440 */
   }
 
   .services__pending {

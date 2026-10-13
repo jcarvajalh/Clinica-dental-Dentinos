@@ -135,7 +135,7 @@ const members: Member[] = [
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 22rem;
+    max-width: 21.875rem; /* 350px: topa el tamaño de la card (foto 350×350) */
     margin-inline: auto;
   }
 
@@ -196,7 +196,6 @@ const members: Member[] = [
   @media (min-width: 640px) {
     .member {
       width: calc((100% - var(--col-gap)) / 2);
-      max-width: none;
       margin-inline: 0;
     }
   }

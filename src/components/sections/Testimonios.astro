@@ -26,9 +26,19 @@ const titleId = `${id}-title`;
 
 const { reviews: ratingData } = site;
 
+/** Iniciales (máx. 2) para el avatar cuando la reseña no tiene foto. */
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .slice(0, 2)
+    .map((w) => w[0] ?? '')
+    .join('')
+    .toUpperCase();
+
 // Dos filas con contenido distinto; corren en direcciones opuestas.
-const rowTop = [reviews[0], reviews[1], reviews[2], reviews[0]];
-const rowBottom = [reviews[1], reviews[2], reviews[0], reviews[1]];
+const half = Math.ceil(reviews.length / 2);
+const rowTop = reviews.slice(0, half);
+const rowBottom = reviews.slice(half);
 
 /** Cada fila se renderiza dos veces para el bucle infinito sin costuras. */
 const copies = [false, true] as const;
@@ -79,22 +89,31 @@ const copies = [false, true] as const;
               <figure
                 class="rev-card"
                 aria-hidden={dup ? 'true' : undefined}
-                aria-label={dup ? undefined : `Reseña de ${r.name}, 5 estrellas sobre 5`}
+                aria-label={dup ? undefined : `Reseña de ${r.name}, ${r.rating} estrellas sobre 5`}
               >
                 <blockquote class="rev-card__text">{r.text}</blockquote>
                 <figcaption class="rev-card__author">
-                  <Image
-                    src={img(r.avatar)}
-                    alt=""
-                    width={28}
-                    height={28}
-                    class="rev-card__avatar"
-                  />
+                  {r.avatar ? (
+                    <Image
+                      src={img(r.avatar)}
+                      alt=""
+                      width={28}
+                      height={28}
+                      class="rev-card__avatar"
+                    />
+                  ) : (
+                    <span class="rev-card__avatar rev-card__avatar--initial" aria-hidden="true">
+                      {initials(r.name)}
+                    </span>
+                  )}
                   <span class="rev-card__meta">
                     <span class="rev-card__name">{r.name}</span>
                     <span class="rev-card__stars" aria-hidden="true">
-                      {Array.from({ length: 5 }).map(() => (
-                        <svg viewBox="0 0 24 24" class="rev-card__star">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <svg
+                          viewBox="0 0 24 24"
+                          class:list={['rev-card__star', { 'rev-card__star--empty': i >= r.rating }]}
+                        >
                           <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                         </svg>
                       ))}
@@ -117,22 +136,31 @@ const copies = [false, true] as const;
               <figure
                 class="rev-card"
                 aria-hidden={dup ? 'true' : undefined}
-                aria-label={dup ? undefined : `Reseña de ${r.name}, 5 estrellas sobre 5`}
+                aria-label={dup ? undefined : `Reseña de ${r.name}, ${r.rating} estrellas sobre 5`}
               >
                 <blockquote class="rev-card__text">{r.text}</blockquote>
                 <figcaption class="rev-card__author">
-                  <Image
-                    src={img(r.avatar)}
-                    alt=""
-                    width={28}
-                    height={28}
-                    class="rev-card__avatar"
-                  />
+                  {r.avatar ? (
+                    <Image
+                      src={img(r.avatar)}
+                      alt=""
+                      width={28}
+                      height={28}
+                      class="rev-card__avatar"
+                    />
+                  ) : (
+                    <span class="rev-card__avatar rev-card__avatar--initial" aria-hidden="true">
+                      {initials(r.name)}
+                    </span>
+                  )}
                   <span class="rev-card__meta">
                     <span class="rev-card__name">{r.name}</span>
                     <span class="rev-card__stars" aria-hidden="true">
-                      {Array.from({ length: 5 }).map(() => (
-                        <svg viewBox="0 0 24 24" class="rev-card__star">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <svg
+                          viewBox="0 0 24 24"
+                          class:list={['rev-card__star', { 'rev-card__star--empty': i >= r.rating }]}
+                        >
                           <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
                         </svg>
                       ))}
@@ -275,6 +303,17 @@ const copies = [false, true] as const;
     object-fit: cover;
   }
 
+  /* Avatar con inicial (reseñas sin foto). */
+  .rev-card__avatar--initial {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem; /* 12px */
+    font-weight: 600;
+    color: var(--color-blue-darker);
+    background-color: var(--color-blue-normal);
+  }
+
   .rev-card__meta {
     display: flex;
     flex-direction: column;
@@ -295,6 +334,11 @@ const copies = [false, true] as const;
     width: 1.25rem; /* 20px */
     height: 1.25rem;
     fill: var(--color-rating-star);
+  }
+
+  /* Estrella no obtenida (p. ej. 4 de 5): mismo icono atenuado. */
+  .rev-card__star--empty {
+    opacity: 0.25;
   }
 </style>
 

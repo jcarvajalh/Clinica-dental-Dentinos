@@ -1,0 +1,141 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import { postHref, type BlogPost } from '@/data/blog';
+
+/*
+ * Tarjeta de artículo del blog. Imagen (o marcador si aún no hay foto real),
+ * título enlazado a la página del artículo ([PENDIENTE]) y fila de metadatos
+ * (fecha + categoría) en píldoras. `data-*` alimentan buscador y filtros.
+ */
+interface Props {
+  post: BlogPost;
+}
+
+const { post } = Astro.props;
+const href = postHref(post.slug);
+
+// Fecha legible en español (p. ej. «21 sept 2026»), con <time> accesible.
+const dateLabel = new Intl.DateTimeFormat('es-ES', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+}).format(new Date(post.date));
+---
+
+<article class="card" data-category={post.category} data-title={post.title.toLowerCase()}>
+  <a class="card__link" href={href}>
+    {
+      post.image ? (
+        <Image
+          src={img(post.image)}
+          alt={post.title}
+          widths={[280, 420, 560]}
+          sizes="(min-width: 60rem) 30vw, 92vw"
+          class="card__media"
+          loading="lazy"
+        />
+      ) : (
+        <span class="card__media card__media--placeholder" aria-hidden="true">
+          {/* Marcador visual hasta tener la imagen real del artículo. */}
+          <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <path
+              d="M24 9c-4-3-9-3-12 0-4 4-3 11-1 18 1 4 2 9 5 9s3-5 6-5 3 5 6 5 4-5 5-9c2-7 3-14-1-18-3-3-8-3-12 0Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+      )
+    }
+    <h2 class="card__title">{post.title}</h2>
+  </a>
+
+  <div class="card__meta">
+    <time class="card__pill" datetime={post.date}>{dateLabel}</time>
+    <span class="card__pill">{post.category}</span>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.6rem + 0.6vw, 1rem);
+  }
+
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.625rem, 0.5rem + 0.5vw, 0.9375rem); /* → 15px (imagen ↔ título) */
+    color: inherit;
+    text-decoration: none;
+    border-radius: 1.25rem;
+  }
+
+  .card__media {
+    width: 100%;
+    aspect-ratio: 280 / 247;
+    object-fit: cover;
+    border-radius: 1.25rem; /* 20px */
+    transition: transform var(--duration-base) var(--ease-out-soft);
+  }
+
+  /* Marcador cuando no hay imagen real (degradado de marca + icono). */
+  .card__media--placeholder {
+    display: grid;
+    place-items: center;
+    color: var(--color-blue-normal-hover);
+    background: linear-gradient(
+      135deg,
+      var(--color-blue-light-active),
+      var(--color-blue-light-hover)
+    );
+  }
+
+  .card__media--placeholder svg {
+    width: 28%;
+    height: 28%;
+  }
+
+  .card__link:hover .card__media {
+    transform: translateY(-4px);
+  }
+
+  .card__title {
+    font-weight: 500;
+    font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem); /* 16 → 18px */
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .card__link:hover .card__title {
+    color: var(--color-blue-dark-hover);
+  }
+
+  .card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .card__pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.2;
+    color: var(--color-blue-dark-hover);
+    background-color: var(--color-blue-light-hover);
+    border: 0.5px solid rgb(42 86 133 / 0.5);
+    border-radius: 1.25rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card__link:hover .card__media {
+      transform: none;
+    }
+  }
+</style>

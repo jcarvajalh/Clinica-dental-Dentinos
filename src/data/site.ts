@@ -26,8 +26,11 @@ export const site = {
     country: 'España',
   },
 
-  // --- Horarios ([PENDIENTE]) ---
-  hours: [] as { days: string; open: string; close: string }[],
+  // --- Horarios de atención (Figma) ---
+  hours: [
+    { days: 'Lunes - Jueves', open: '10:00 AM', close: '21:00' },
+    { days: 'Viernes', open: '10:00 AM', close: '14:00' },
+  ] as { days: string; open: string; close: string }[],
 
   // --- Redes sociales ([PENDIENTE]) ---
   social: {} as Record<string, string>,

@@ -26,15 +26,11 @@ const titleId = `${id}-title`;
 
 <section class="faqs" aria-labelledby={titleId}>
   <div class="faqs__inner">
-    <div class="faqs__left">
-      <header class="faqs__head">
-        <p class="eyebrow">{eyebrow}</p>
-        <h2 id={titleId} class="faqs__title">{title}</h2>
-      </header>
+    <p class="eyebrow faqs__eyebrow">{eyebrow}</p>
+    <h2 id={titleId} class="faqs__title">{title}</h2>
 
-      <div class="faqs__aside">
-        <slot name="aside" />
-      </div>
+    <div class="faqs__aside">
+      <slot name="aside" />
     </div>
 
     <ul class="faqs__list" role="list">
@@ -96,31 +92,18 @@ const titleId = `${id}-title`;
 
   .faqs__inner {
     display: grid;
-    gap: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+    grid-template-columns: 1fr;
     padding-inline: var(--inset-section);
   }
 
-  /* --- Columna izquierda: título arriba, tarjeta aside debajo ----------- */
-  .faqs__left {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .faqs__head {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: clamp(1rem, 0.7rem + 1.2vw, 1.875rem);
-    /* Separación mínima garantizada entre el h2 y la tarjeta aside. */
-    margin-bottom: clamp(2rem, 1.4rem + 2.4vw, 3rem);
-  }
-
-  /* El aside baja hasta el fondo cuando hay espacio (lista más alta). */
-  .faqs__aside {
-    margin-top: auto;
+  .faqs__eyebrow {
+    justify-self: start; /* la píldora no se estira como ítem del grid */
+    margin-bottom: var(--gap-head);
   }
 
   .faqs__title {
+    /* Separación antes de la tarjeta aside (en móvil, apilado). */
+    margin-bottom: clamp(2rem, 1.4rem + 2.4vw, 3rem);
     font-weight: 500;
     font-size: clamp(1.75rem, 1.574rem + 0.751vw, 2.75rem); /* 28 → 36px @1440 → 44px */
     line-height: 1.2;
@@ -130,6 +113,8 @@ const titleId = `${id}-title`;
 
   /* --- Tarjeta inferior izquierda (slot aside) ------------------------- */
   .faqs__aside {
+    /* Separación antes de la lista (en móvil, apilado). */
+    margin-bottom: clamp(2rem, 1.4rem + 2.4vw, 3rem);
     padding: clamp(1.25rem, 0.9rem + 1.4vw, 1.625rem); /* ~26px @1440 */
     background-color: var(--color-blue-light-hover);
     border-radius: 1.25rem; /* 20px */
@@ -221,20 +206,39 @@ const titleId = `${id}-title`;
   }
 
   /* --- Escritorio: dos columnas (450 : 671 @1440) --------------------- */
+  /* El eyebrow ocupa su propia fila; la lista arranca en la fila del título,
+     de modo que su borde superior queda a la misma altura que el <h2>. */
   @media (min-width: 56.25rem) {
     .faqs__inner {
       grid-template-columns: 450fr 671fr;
-      grid-template-areas: 'left list';
+      grid-template-areas:
+        'eyebrow .'
+        'title   list'
+        'aside   list';
+      grid-template-rows: auto auto 1fr;
       column-gap: clamp(2.5rem, -2rem + 10vw, 9.6875rem); /* 155px @1440 */
-      align-items: stretch;
+      align-items: start;
     }
 
-    .faqs__left {
-      grid-area: left;
+    .faqs__eyebrow {
+      grid-area: eyebrow;
+    }
+
+    .faqs__title {
+      grid-area: title;
+      margin-bottom: 0;
+    }
+
+    .faqs__aside {
+      grid-area: aside;
+      align-self: end; /* la tarjeta baja al fondo de la columna */
+      margin-bottom: 0;
+      margin-top: clamp(2rem, 1.4rem + 2.4vw, 3rem);
     }
 
     .faqs__list {
       grid-area: list;
+      align-self: start;
     }
   }
 </style>

@@ -1,0 +1,438 @@
+---
+import { Image } from 'astro:assets';
+import { img } from '@/lib/images';
+import { site, teleconsultaHref } from '@/data/site';
+import { tratamientos } from '@/data/tratamientos';
+
+/*
+ * Sección de contacto: columna izquierda con datos (dirección, teléfonos,
+ * correo, horarios y acceso a teleconsulta) y columna derecha con el formulario.
+ * Fondo = textura azul de la clínica (`contacto-fondo`).
+ *
+ * ⚠️ [PENDIENTE]: el formulario aún NO está conectado a un servicio de envío
+ * (Formspree / Netlify Forms / backend propio). Configurar `action`/`method`
+ * reales antes de publicar. De momento usa validación nativa del navegador.
+ */
+const { address, phone, phoneLandline, email, mapsUrl, hours } = site;
+const addressLine = `${address.street} ${address.district}, ${address.postalCode}, ${address.city}`;
+const telHref = (n: string) => `tel:${n.replace(/[^\d+]/g, '')}`;
+
+const contactPreferences = ['WhatsApp', 'Teléfono', 'Correo electrónico'];
+---
+
+<section class="contact" aria-labelledby="contact-title">
+  <Image
+    src={img('contacto-fondo')}
+    alt=""
+    aria-hidden="true"
+    widths={[768, 1200, 1600, 1920]}
+    sizes="100vw"
+    class="contact__bg"
+    loading="eager"
+    fetchpriority="high"
+  />
+
+  <div class="contact__inner">
+    <div class="contact__info">
+      <h1 id="contact-title" class="contact__title">
+        Contacta con <span class="contact__brand">Dentinos</span> en Teatinos,
+        Málaga
+      </h1>
+
+      <p class="contact__lead">
+        Contacta con Dentinos para solicitar tu cita, consultar cualquier
+        problema dental o resolver tus dudas antes de tu visita. Puedes
+        comunicarte con nosotros por WhatsApp, teléfono, correo electrónico o
+        mediante el formulario de contacto.
+      </p>
+
+      <address class="contact__channels">
+        <a class="contact__link contact__link--underline" href={mapsUrl}>
+          {addressLine}
+        </a>
+        <p class="contact__phones">
+          <a class="contact__link" href={telHref(phone)}>{phone}</a>
+          {' | '}
+          <a class="contact__link" href={telHref(`+34 ${phoneLandline}`)}>{phoneLandline}</a>
+        </p>
+        <a class="contact__link contact__link--underline" href={`mailto:${email}`}>
+          {email}
+        </a>
+      </address>
+
+      <div class="info-card schedule">
+        <p class="schedule__title">Nuestros horarios de atención</p>
+        <ul class="schedule__list" role="list">
+          {
+            hours.map((h) => (
+              <li class="schedule__row">
+                <span class="schedule__days">{h.days}</span>
+                <span class="schedule__time">{h.open} - {h.close}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <a class="info-card tele" href={teleconsultaHref}>
+        <span class="tele__icon" aria-hidden="true">
+          <Image src={img('teleconsulta')} alt="" width={30} height={30} />
+        </span>
+        <span class="tele__body">
+          <span class="tele__title">Agenda una teleconsulta directamente aquí</span>
+          <span class="tele__text">Hablemos para conocer qué necesitas</span>
+        </span>
+      </a>
+    </div>
+
+    {/* TODO [PENDIENTE]: conectar `action`/`method` a un servicio de envío real. */}
+    <form class="contact__form" action="#" method="post" novalidate>
+      <div class="field">
+        <label class="field__label" for="c-nombre">Nombre (obligatorio)</label>
+        <input class="field__control" id="c-nombre" name="nombre" type="text"
+          autocomplete="name" required />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="c-email">Correo electrónico (obligatorio)</label>
+        <input class="field__control" id="c-email" name="email" type="email"
+          autocomplete="email" required />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="c-tel">Teléfono (obligatorio)</label>
+        <input class="field__control" id="c-tel" name="telefono" type="tel"
+          autocomplete="tel" required />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="c-interes">Estoy interesado en (opcional)</label>
+        <select class="field__control" id="c-interes" name="interes">
+          <option value="">Selecciona una opción</option>
+          {tratamientos.map((t) => <option value={t.slug}>{t.name}</option>)}
+          <option value="otro">Otro / No estoy seguro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="c-via">Contactarme primero por (opcional)</label>
+        <select class="field__control" id="c-via" name="via">
+          <option value="">Selecciona una opción</option>
+          {contactPreferences.map((p) => <option value={p}>{p}</option>)}
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="c-mensaje">Mensaje (obligatorio)</label>
+        <textarea class="field__control field__control--area" id="c-mensaje"
+          name="mensaje" rows={4} required></textarea>
+      </div>
+
+      <label class="field__check">
+        <input type="checkbox" name="privacidad" required />
+        <span>
+          He leído las <a href="/politica-de-privacidad">políticas de privacidad</a>
+          y acepto los términos y condiciones
+        </span>
+      </label>
+
+      <button type="submit" class="contact__submit">Ponerme en contacto</button>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    isolation: isolate;
+    padding-top: calc(var(--header-height) + clamp(1.5rem, 1rem + 2vw, 2.5rem));
+    padding-bottom: var(--section-py);
+    padding-inline: var(--gutter);
+  }
+
+  /* Fondo de textura azul que cubre toda la sección. */
+  .contact__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .contact__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 1.2rem + 2.5vw, 3rem);
+    align-items: start;
+    /* Ancho de contenido del Figma (1062px): centrado deja ~189px a cada lado
+       a 1440px, tal como el diseño. */
+    max-width: 66.375rem;
+    margin-inline: auto;
+  }
+
+  /* --- Columna izquierda: info ---------------------------------------- */
+  .contact__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .contact__title {
+    max-width: 30rem;
+    font-weight: 500;
+    font-size: clamp(2rem, 1.4rem + 2.6vw, 2.75rem); /* 32 → 44px @1440 */
+    line-height: 1.18;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .contact__brand {
+    color: var(--color-blue-dark); /* #396996 — un tono más claro, AA en grande */
+  }
+
+  .contact__lead {
+    max-width: 30rem;
+    margin-top: clamp(1.25rem, 1rem + 1vw, 1.875rem);
+    font-size: 1rem; /* 16px */
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    text-wrap: pretty;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .contact__channels {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.625rem, 0.5rem + 0.5vw, 1rem);
+    margin-top: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem);
+    font-style: normal; /* <address> no itálico */
+    font-size: 1rem;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .contact__phones {
+    margin: 0;
+  }
+
+  .contact__link {
+    color: inherit;
+    transition: color var(--duration-base) var(--ease-out-soft);
+  }
+
+  .contact__link--underline {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .contact__phones .contact__link {
+    white-space: nowrap;
+  }
+
+  .contact__link:hover {
+    color: var(--color-blue-darker);
+  }
+
+  /* --- Tarjetas (horarios + teleconsulta) ----------------------------- */
+  .info-card {
+    width: 100%;
+    max-width: 27rem; /* ambas tarjetas iguales; cabe la tele en una línea */
+    padding: clamp(0.875rem, 0.7rem + 0.7vw, 1rem) clamp(1rem, 0.8rem + 0.9vw, 1.25rem);
+    background-color: var(--color-white);
+    border-radius: 1.25rem; /* 20px */
+    box-shadow: 0 3px 5px rgb(0 0 0 / 0.25);
+  }
+
+  .schedule {
+    margin-top: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+  }
+
+  .schedule__title {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.4;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .schedule__list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .schedule__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.3;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .schedule__time {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* Tarjeta de teleconsulta (clicable). Mismo ancho que la de horarios. */
+  .tele {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.625rem;
+    text-decoration: none;
+    transition: box-shadow var(--duration-base) var(--ease-out-soft);
+  }
+
+  .tele:hover {
+    box-shadow: 0 4px 10px rgb(0 0 0 / 0.25);
+  }
+
+  .tele__icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 3.0625rem; /* 49px */
+    height: 3.1875rem; /* 51px */
+    background-color: var(--color-blue-light-active); /* #ACDFF0 */
+    border-radius: 0.625rem; /* 10px */
+  }
+
+  .tele__icon :global(img) {
+    width: 1.875rem; /* 30px */
+    height: 1.875rem;
+    object-fit: contain;
+  }
+
+  .tele__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .tele__title {
+    font-weight: 500;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .tele__text {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--color-blue-dark-hover);
+  }
+
+  /* --- Columna derecha: formulario ------------------------------------ */
+  .contact__form {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 0.8rem + 0.9vw, 1.375rem);
+    width: 100%;
+    padding: clamp(1.5rem, 1.1rem + 1.8vw, 2rem);
+    background-color: var(--color-white);
+    border-radius: 1.25rem; /* 20px */
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .field__label {
+    font-weight: 500;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-darker);
+  }
+
+  .field__control {
+    width: 100%;
+    min-height: 2.75rem; /* área táctil ≥44px (§11) */
+    padding: 0.5rem 0.875rem;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.3;
+    color: var(--color-blue-darker);
+    background-color: var(--color-blue-light-hover); /* #EFF7FB */
+    border: 0.5px solid rgb(0 0 0 / 0.2);
+    box-shadow: 0 3px 5px rgb(0 0 0 / 0.25);
+    border-radius: 0.625rem; /* 10px */
+    transition:
+      border-color var(--duration-base) var(--ease-out-soft),
+      box-shadow var(--duration-base) var(--ease-out-soft);
+  }
+
+  .field__control--area {
+    min-height: 7.1875rem; /* 115px (Figma) */
+    resize: vertical;
+  }
+
+  .field__control::placeholder {
+    color: var(--color-blue-dark-hover);
+  }
+
+  .field__control:focus-visible {
+    outline: none;
+    border-color: var(--color-blue-dark);
+    box-shadow: 0 0 0 3px rgb(23 64 117 / 0.25);
+  }
+
+  /* Checkbox + texto de políticas. */
+  .field__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.3;
+    color: var(--color-blue-dark-hover);
+  }
+
+  .field__check input {
+    flex-shrink: 0;
+    width: 1.25rem; /* 20px */
+    height: 1.25rem;
+    margin-top: 0.0625rem;
+    accent-color: var(--color-blue-darker);
+  }
+
+  .field__check a {
+    color: var(--color-blue-dark-active);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .contact__submit {
+    margin-top: 0.25rem;
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.9375rem; /* 15px */
+    letter-spacing: -0.04em;
+    color: var(--color-white);
+    background-color: var(--color-blue-darker);
+    border-radius: 0.625rem; /* 10px */
+    box-shadow: 0 3px 5px rgb(0 0 0 / 0.25);
+    cursor: pointer;
+    transition: background-color var(--duration-base) var(--ease-out-soft);
+  }
+
+  .contact__submit:hover {
+    background-color: var(--color-blue-dark-active);
+  }
+
+  /* --- Escritorio (≥64rem): info | formulario (anchos del Figma) ------- */
+  @media (min-width: 64rem) {
+    .contact__inner {
+      /* Texto 479px | formulario ~464px; space-between reparte el hueco
+         restante, más cerca que con la columna elástica. */
+      grid-template-columns: minmax(0, 29.9375rem) minmax(0, 29rem);
+      justify-content: space-between;
+    }
+  }
+</style>

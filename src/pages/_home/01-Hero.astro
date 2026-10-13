@@ -216,4 +216,12 @@ const { reviews } = site;
       max-height: calc(100svh - 1.25rem);
     }
   }
+
+  /* 22"/24"+ (≥1920px): el titular pasa a 80px para que las dos líneas
+     sigan viéndose fieles en pantallas grandes (§6). */
+  @media (min-width: 120rem) {
+    .hero__title {
+      font-size: 5rem; /* 80px */
+    }
+  }
 </style>

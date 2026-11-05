@@ -116,27 +116,29 @@ const members: Member[] = [
     margin-top: clamp(2.5rem, 1.8rem + 3vw, 3.75rem);
   }
 
-  /* --- Rejilla: 3 por fila; la última fila (2) queda centrada ---------- */
+  /* --- Rejilla: 5 tarjetas en una sola fila en escritorio -------------- */
   .team__grid {
-    --col-gap: clamp(1.5rem, 1rem + 5.2vw, 5.6875rem); /* → 91px @1440 */
+    --col-gap: clamp(1rem, 0.6rem + 1.4vw, 1.875rem); /* → 30px @1440 */
     list-style: none;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: clamp(2.75rem, 2rem + 2.5vw, 4.5rem) var(--col-gap);
-    /* 1073px @1440; sigue creciendo en pantallas grandes (§6), cap 1520. */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* móvil: 2 columnas */
+    justify-items: center;
+    gap: clamp(2.25rem, 1.8rem + 2vw, 3rem) var(--col-gap);
     width: 100%;
-    max-width: clamp(67rem, 74.5vw, 95rem);
+    max-width: 30rem;
     margin-inline: auto;
   }
 
   .member {
+    position: relative; /* permite el z-index al ampliarse en hover */
+    container-type: inline-size; /* la tipografía escala con el ancho real de la card */
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 21.875rem; /* 350px: topa el tamaño de la card (foto 350×350) */
+    max-width: 21.875rem; /* 350px: tope de la card (foto 350×350) */
     margin-inline: auto;
+    transition: transform var(--duration-slow) var(--ease-out-soft);
   }
 
   /* --- Foto cuadrada con la píldora del nombre superpuesta ------------- */
@@ -159,15 +161,16 @@ const members: Member[] = [
     bottom: 6.06%;
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
-    padding: clamp(0.4375rem, 0.35rem + 0.25vw, 0.625rem)
-      clamp(1rem, 0.7rem + 1.2vw, 1.6875rem); /* 7px / 27px @1440 */
+    gap: 0.1rem;
+    /* Padding y radio proporcionales al ancho de la card (cqw). */
+    padding: clamp(0.25rem, 3cqw, 0.5rem) clamp(0.4375rem, 5cqw, 0.9375rem);
     background-color: var(--color-white);
-    border-radius: var(--radius-media);
+    border-radius: clamp(0.625rem, 6cqw, 1.5rem);
   }
 
+  /* Tipografía proporcional al tamaño de la imagen (cqw = % del ancho de card). */
   .member__name {
-    font-size: clamp(1rem, 0.375rem + 0.833vw, 1.375rem); /* → 18px @1440 */
+    font-size: clamp(0.625rem, 7.5cqw, 1.125rem); /* ~10 → 18px según la card */
     font-weight: 500;
     line-height: 1.18;
     letter-spacing: -0.04em;
@@ -177,32 +180,59 @@ const members: Member[] = [
   .member__role {
     font-style: italic;
     font-weight: 300;
-    font-size: clamp(0.8125rem, 0.3125rem + 0.625vw, 1.0625rem); /* → 14px @1440 */
+    font-size: clamp(0.5rem, 5.5cqw, 0.9375rem); /* ~8 → 15px según la card */
     line-height: 1.2;
     letter-spacing: -0.04em;
     color: var(--color-blue-darker);
   }
 
   .member__desc {
-    margin-top: clamp(0.75rem, 0.5rem + 0.6vw, 1rem); /* ~16px @1440 */
-    font-size: var(--text-card-title); /* 20px @1440 */
+    margin-top: clamp(0.375rem, 3cqw, 0.75rem);
+    font-size: clamp(0.6875rem, 7cqw, 1.0625rem); /* ~11 → 17px según la card */
     font-weight: 400;
-    line-height: 1.2;
+    line-height: 1.25;
     letter-spacing: -0.04em;
     color: var(--color-blue-darker);
   }
 
-  /* --- 2 columnas (tablet) → 3 columnas (escritorio) ------------------- */
+  /* --- Tablet: 3 columnas --------------------------------------------- */
   @media (min-width: 640px) {
+    .team__grid {
+      grid-template-columns: repeat(3, 1fr);
+      max-width: 48rem;
+    }
+  }
+
+  /* --- Escritorio: las 5 tarjetas en una sola fila -------------------- */
+  @media (min-width: 1024px) {
+    .team__grid {
+      grid-template-columns: repeat(5, 1fr);
+      /* sigue creciendo en pantallas grandes (§6); nunca desborda el inset. */
+      max-width: clamp(54rem, 72vw, 82rem);
+      overflow: visible;
+    }
+
     .member {
-      width: calc((100% - var(--col-gap)) / 2);
+      max-width: none; /* lo dimensiona la columna del grid (~148–205px) */
       margin-inline: 0;
     }
   }
 
-  @media (min-width: 1024px) {
-    .member {
-      width: calc((100% - 2 * var(--col-gap)) / 3);
+  /* Hover: la tarjeta se amplía (×2) por encima de las demás y vuelve a su
+     tamaño al salir. Solo con puntero fino (no en táctil). Las tarjetas de
+     los extremos crecen hacia dentro para no provocar scroll horizontal. */
+  @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+    .member:hover {
+      transform: scale(1.5);
+      z-index: 5;
+    }
+
+    .member:first-child:hover {
+      transform-origin: left center;
+    }
+
+    .member:last-child:hover {
+      transform-origin: right center;
     }
   }
 </style>

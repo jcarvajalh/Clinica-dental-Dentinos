@@ -1,3 +1,17 @@
+# Este repo es un único paquete (no un monorepo), pero pnpm 10.x (el que usa
+# Cloudflare) exige el campo `packages` cuando existe este archivo. El patrón
+# no coincide con ninguna carpeta: la app sigue siendo la raíz.
+packages:
+  - "packages/*"
+
+# Aprobación de scripts de build de dependencias (pnpm los bloquea por defecto).
+# Cada versión de pnpm usa una clave distinta, así que declaramos las dos para
+# que funcione tanto en local (pnpm 11, `allowBuilds`) como en Cloudflare
+# (pnpm 10, `onlyBuiltDependencies`).
 allowBuilds:
   esbuild: true
   sharp: true
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp

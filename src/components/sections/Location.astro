@@ -34,32 +34,12 @@ const mapsHref = site.mapsUrl || '#';
   </header>
 
   <div class="location__stage">
-    {/* Par izquierdo: dos fotos que se solapan por la punta (decorativas) */}
-    <div class="location__cluster location__cluster--left" aria-hidden="true">
-      <Image
-        src={img('location-equipo')}
-        alt=""
-        widths={[224, 340, 460]}
-        sizes="15vw"
-        class="location__float"
-        style="--rotate:-5.15deg"
-      />
-      <Image
-        src={img('location-sala')}
-        alt=""
-        widths={[224, 340, 460]}
-        sizes="15vw"
-        class="location__float location__float--over"
-        style="--rotate:9.07deg"
-      />
-    </div>
-
     <div class="location__map">
       <Image
         src={img('location-mapa')}
         alt="Mapa de la ubicación de la Clínica Dental Dentinos en Teatinos, Málaga"
         widths={[560, 876, 1200, 1600]}
-        sizes="(min-width: 56.25rem) 62vw, 92vw"
+        sizes="(min-width: 56.25rem) 56vw, 92vw"
         class="location__map-img"
       />
 
@@ -94,24 +74,12 @@ const mapsHref = site.mapsUrl || '#';
       </figure>
     </div>
 
-    {/* Par derecho: dos fotos que se solapan por la punta (decorativas) */}
-    <div class="location__cluster location__cluster--right" aria-hidden="true">
-      <Image
-        src={img('location-recepcion')}
-        alt=""
-        widths={[224, 340, 460]}
-        sizes="15vw"
-        class="location__float"
-        style="--rotate:15.87deg"
-      />
-      <Image
-        src={img('location-consulta')}
-        alt=""
-        widths={[224, 340, 460]}
-        sizes="15vw"
-        class="location__float location__float--over"
-        style="--rotate:-7.66deg"
-      />
+    {/* Las 4 fotos del interior, en una fila horizontal bajo el mapa (decorativas) */}
+    <div class="location__gallery" aria-hidden="true">
+      <Image src={img('location-equipo')} alt="" widths={[224, 340, 460]} sizes="(min-width: 56.25rem) 14vw, 23vw" class="location__photo" />
+      <Image src={img('location-sala')} alt="" widths={[224, 340, 460]} sizes="(min-width: 56.25rem) 14vw, 23vw" class="location__photo" />
+      <Image src={img('location-recepcion')} alt="" widths={[224, 340, 460]} sizes="(min-width: 56.25rem) 14vw, 23vw" class="location__photo" />
+      <Image src={img('location-consulta')} alt="" widths={[224, 340, 460]} sizes="(min-width: 56.25rem) 14vw, 23vw" class="location__photo location__photo--raise" />
     </div>
   </div>
 
@@ -137,11 +105,12 @@ const mapsHref = site.mapsUrl || '#';
     margin-bottom: clamp(1.5rem, 0.9rem + 2.4vw, 2.5rem);
   }
 
-  /* --- Escenario: mapa centrado + fotos flotantes ---------------------- */
+  /* --- Escenario: mapa centrado + fila de fotos debajo ----------------- */
   .location__stage {
-    position: relative;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1rem, 0.5rem + 1.8vw, 2rem);
     width: 100%;
     padding-inline: var(--gutter);
   }
@@ -149,8 +118,8 @@ const mapsHref = site.mapsUrl || '#';
   .location__map {
     position: relative;
     width: 100%;
-    /* 876px @1440 (≈62vw); sigue creciendo en pantallas grandes (§6). */
-    max-width: clamp(20rem, 62vw, 73rem);
+    /* 10% más pequeño que antes: ~788px @1440 (≈56vw); sigue creciendo (§6). */
+    max-width: clamp(18rem, 55.8vw, 65.7rem);
   }
 
   .location__map-img {
@@ -161,49 +130,31 @@ const mapsHref = site.mapsUrl || '#';
     border-radius: var(--radius-media); /* 50px @1440 */
   }
 
-  /* --- Fotos flotantes decorativas (solo escritorio) ------------------- */
-  /* Cada lado es un clúster de 2 fotos que se solapan por la punta. */
-  .location__cluster {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  /* --- Fila de 4 fotos del interior bajo el mapa ----------------------- */
+  /* Las 4 ocupan juntas el mismo ancho que el mapa: celdas iguales (1/4 cada
+     una) con object-fit cover, así todas lucen el mismo tamaño cuadrado
+     independientemente del recorte/proporción de cada archivo. */
+  .location__gallery {
     display: flex;
-    flex-direction: column;
-    z-index: 2;
+    gap: clamp(0.625rem, 0.3rem + 1.1vw, 1.25rem);
+    width: 100%;
+    max-width: clamp(18rem, 55.8vw, 65.7rem); /* mismo ancho que el mapa */
   }
 
-  .location__cluster--left {
-    left: 1%;
-    align-items: flex-start;
-  }
-
-  .location__cluster--right {
-    right: 1%;
-    align-items: flex-end;
-  }
-
-  .location__float {
-    /* Proporción natural (las PNG ya traen su redondeo en las 4 esquinas);
-       sin object-fit/aspect-ratio para no recortarlas ni deformarlas. */
-    width: clamp(9rem, 15vw, 14rem); /* más grandes que antes (180 → 224px) */
+  .location__photo {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 100%;
     height: auto;
-    transform: rotate(var(--rotate));
+    aspect-ratio: 4 / 3; /* más anchas que altas */
+    object-fit: cover;
+    object-position: center top; /* encuadra hacia arriba: no corta los rostros */
+    border-radius: clamp(0.875rem, 0.5rem + 1.2vw, 1.5rem);
   }
 
-  /* La segunda foto sube para solaparse con la primera por la esquina y
-     queda por encima; cada lado la desplaza ligeramente hacia su borde. */
-  .location__float--over {
-    margin-top: -20%;
-    position: relative;
-    z-index: 1;
-  }
-
-  .location__cluster--left .location__float--over {
-    margin-left: -10%;
-  }
-
-  .location__cluster--right .location__float--over {
-    margin-right: -10%;
+  /* La cuarta foto se sube un poco (encuadre algo más abajo del borde). */
+  .location__photo--raise {
+    object-position: center 18%;
   }
 
   /* --- Tarjeta-pin sobre el mapa --------------------------------------- */
@@ -309,12 +260,8 @@ const mapsHref = site.mapsUrl || '#';
     margin-top: clamp(1.75rem, 1rem + 3vw, 2.75rem);
   }
 
-  /* --- Móvil: sin fotos flotantes; tarjeta algo mayor ------------------ */
+  /* --- Móvil: tarjeta-pin algo mayor ---------------------------------- */
   @media (max-width: 56.1875rem) {
-    .location__cluster {
-      display: none;
-    }
-
     .place {
       width: clamp(9rem, 40vw, 11rem);
     }

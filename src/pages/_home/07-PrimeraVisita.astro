@@ -103,7 +103,7 @@ const steps: Step[] = [
   .step {
     --step-pad: clamp(1rem, 0.7rem + 0.9vw, 1.6875rem); /* 27px @1440 */
     position: relative;
-    aspect-ratio: 272 / 419;
+    aspect-ratio: 272 / 461; /* +10% de altura */
     overflow: hidden;
     border-radius: 5rem;
     isolation: isolate;
@@ -141,7 +141,7 @@ const steps: Step[] = [
      para que el espacio superior iguale al de los demás, y se recorta abajo. */
   .step__num {
     font-weight: 500;
-    font-size: clamp(4rem, 1.4rem + 6.9vw, 9rem); /* 128px @1440, sigue creciendo */
+    font-size: clamp(3rem, 1.1rem + 5.5vw, 7.25rem); /* ~97px @1440, más pequeño */
     line-height: 0.72;
     margin-bottom: -0.22em; /* desciende y se recorta contra el borde inferior */
     color: rgb(172 223 240 / 0.65); /* blue-light-active al 65% */
@@ -149,14 +149,14 @@ const steps: Step[] = [
 
   .step__title {
     font-weight: 800;
-    font-size: clamp(1rem, 0.9rem + 0.6vw, 1.25rem); /* 16 → 18px @1440 */
+    font-size: clamp(0.8125rem, 0.78rem + 0.3vw, 1rem); /* 13 → 16px @1440 */
     line-height: 1.17;
     color: var(--color-blue-light-active); /* #ACDFF0 */
   }
 
   .step__body {
     font-weight: 500;
-    font-size: clamp(0.9375rem, 0.85rem + 0.3vw, 1.0625rem); /* 15 → 17px */
+    font-size: clamp(0.8125rem, 0.76rem + 0.25vw, 0.9375rem); /* 13 → 15px */
     line-height: 1.19;
     color: var(--color-blue-light-active);
   }
@@ -165,8 +165,8 @@ const steps: Step[] = [
   @media (min-width: 56.25rem) {
     .visit__grid {
       grid-template-columns: repeat(3, 1fr);
-      /* 864px @1440 (60vw); sigue creciendo en pantallas grandes, cap 1152. */
-      max-width: clamp(54rem, 60vw, 72rem);
+      /* Tarjetas más pequeñas: 720px @1440 (50vw); sigue creciendo, cap 60rem. */
+      max-width: clamp(42rem, 50vw, 60rem);
     }
   }
 </style>

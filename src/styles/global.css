@@ -156,6 +156,7 @@
   /* --- Movimiento (§9) ------------------------------------------------------ */
   --duration-base: 200ms;
   --duration-slow: 400ms; /* despliegues amplios: acordeón FAQ, etc. */
+  --duration-reveal: 650ms; /* aparición progresiva de secciones al hacer scroll */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -341,12 +342,34 @@
   }
 }
 
+/* ===========================================================================
+   Carga progresiva — reveal de secciones al entrar en viewport (§9)
+   El estado oculto solo se aplica cuando JS está listo (`.js-ready`, añadido
+   por un script inline en el <head> antes del primer pintado → sin FOUC) y el
+   usuario no pidió menos movimiento. El observer marca `.is-visible` al entrar.
+   La 1.ª sección (hero) se excluye: aparece instantánea para no retrasar el LCP.
+   =========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .js-ready #main-content > *:not(:first-child) {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition: opacity var(--duration-reveal) var(--ease-out-soft),
+      transform var(--duration-reveal) var(--ease-out-soft);
+  }
+
+  .js-ready #main-content > .is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* Todas las transiciones/animaciones del proyecto usan estos tokens;
      neutralizarlos aquí desactiva el movimiento sin recurrir a !important (§5). */
   :root {
     --duration-base: 0.01ms;
     --duration-slow: 0.01ms;
+    --duration-reveal: 0.01ms;
     --ease-out-soft: linear;
   }
 

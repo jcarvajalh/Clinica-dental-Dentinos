@@ -1,0 +1,103 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Página en construcción | Clínica Dental Dentinos"
+  description="Esta página todavía está en construcción. Vuelve al inicio de la Clínica Dental Dentinos en Teatinos, Málaga."
+  solidHeader
+>
+  {/* No indexar la página de error/construcción. */}
+  <meta slot="head" name="robots" content="noindex, follow" />
+
+  <section class="construction" aria-labelledby="construction-title">
+    <span class="construction__ghost" aria-hidden="true">404</span>
+
+    <div class="construction__inner">
+      <p class="eyebrow">Página en construcción</p>
+
+      <h1 id="construction-title" class="construction__title">
+        Estamos preparando <span class="accent">esta sección.</span>
+      </h1>
+
+      <p class="construction__text">
+        Seguimos trabajando para dejarlo todo a punto. Mientras tanto, vuelve al
+        inicio o escríbenos y te ayudamos con lo que necesites.
+      </p>
+
+      <div class="construction__actions">
+        <a href="/" class="btn btn-primary">Volver al inicio</a>
+        <a href="/contacto" class="btn btn-secondary">Contáctanos</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .construction {
+    position: relative;
+    isolation: isolate; /* el “404” decorativo queda por detrás del contenido */
+    overflow: hidden;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-blue-light);
+    /* Deja pasar el header fijo (solid en esta página). */
+    padding-top: calc(var(--header-height) + clamp(2rem, 1.2rem + 3vw, 4rem));
+    padding-bottom: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+    padding-inline: var(--inset-section);
+    text-align: center;
+  }
+
+  /* “404” gigante translúcido de fondo (eco de los números de «Cómo trabajamos»). */
+  .construction__ghost {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 800;
+    font-size: clamp(11rem, 4rem + 34vw, 34rem);
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    color: var(--color-blue-light-active); /* #ACDFF0 */
+    opacity: 0.5;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .construction__inner {
+    max-width: 40rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.25rem, 0.9rem + 1.5vw, 2rem);
+  }
+
+  .construction__title {
+    font-weight: 400;
+    font-size: var(--text-display); /* 40 → 64px, sigue creciendo (§6) */
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    color: var(--color-blue-darker);
+  }
+
+  /* La palabra acento serif hereda .accent; aquí solo su color. */
+  .construction__title .accent {
+    color: var(--color-blue-dark);
+  }
+
+  .construction__text {
+    max-width: 34rem;
+    font-size: var(--text-lead); /* 18px */
+    line-height: var(--leading-lead);
+    color: var(--color-blue-dark-hover);
+  }
+
+  .construction__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+  }
+</style>

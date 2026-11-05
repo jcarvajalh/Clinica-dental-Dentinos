@@ -7,8 +7,8 @@
   // config explícita evita que `wrangler deploy` intente autodetectar la app
   // (que fallaba creyendo que el repo era un monorepo por pnpm-workspace.yaml).
   "assets": {
-    "directory": "./dist"
-    // Nota: cuando exista src/pages/404.astro (genera dist/404.html), añadir
-    // "not_found_handling": "404-page" para servirlo en rutas no encontradas.
+    "directory": "./dist",
+    // Sirve dist/404.html (de src/pages/404.astro) en rutas no encontradas.
+    "not_found_handling": "404-page"
   }
 }

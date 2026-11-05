@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "clinica-dental-dentinos",
+  "compatibility_date": "2026-11-05",
+  // Sitio estático (Astro output: 'static'). Se sirve `dist/` como Workers
+  // Static Assets: no hay script de Worker, solo los archivos. Tener esta
+  // config explícita evita que `wrangler deploy` intente autodetectar la app
+  // (que fallaba creyendo que el repo era un monorepo por pnpm-workspace.yaml).
+  "assets": {
+    "directory": "./dist"
+    // Nota: cuando exista src/pages/404.astro (genera dist/404.html), añadir
+    // "not_found_handling": "404-page" para servirlo en rutas no encontradas.
+  }
+}

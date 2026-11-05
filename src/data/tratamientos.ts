@@ -27,6 +27,13 @@ export interface Treatment {
   description?: string;
   /** Slug de imagen en src/assets (para img()). Opcional hasta tenerla. */
   image?: string;
+  /**
+   * Especialistas del equipo asignados al tratamiento (slugs de las fotos
+   * `team-*` de src/assets/images/home). Se muestran como avatares en el panel
+   * de la sección de servicios. Asignación orientativa por especialidad —
+   * a confirmar con la clínica.
+   */
+  specialists?: string[];
   /** Ruta a la página del tratamiento (categoría). */
   href: string;
   /** Tratamientos específicos de la categoría (mega-menú del header). */
@@ -43,6 +50,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Alinea tus dientes de forma discreta con el sistema Invisalign en Málaga. Férulas transparentes y extraíbles que facilitan tu higiene oral y alimentación diaria.',
     image: 'servicio-ortodoncia-invisible',
+    specialists: ['team-fernandez-cavada', 'team-salamanca'],
     href: '/tratamientos/ortodoncia-invisible',
     children: [
       { name: 'Expansor de paladar de Invisalign', href: '/tratamientos/expansor-paladar' },
@@ -60,6 +68,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Tratamiento efectivo para corregir la mordida, estética y funcionalidad bucal. Disponemos de diversos tipos de brackets según tus necesidades y preferencias estéticas.',
     image: 'servicio-brackets',
+    specialists: ['team-fernandez-cavada', 'team-salamanca'],
     href: '/tratamientos/brackets',
     children: [
       { name: 'Brackets autoligables', href: '/tratamientos/brackets/autoligables' },
@@ -76,6 +85,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Solución integral para dolores articulares y problemas de masticación. Diagnóstico y tratamiento especializado de la articulación temporomandibular en Teatinos, Málaga.',
     image: 'servicio-atm',
+    specialists: ['team-fernandez-cavada', 'team-ternero'],
     href: '/tratamientos/atm',
   },
   {
@@ -87,6 +97,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Cuidado, prevención y mantenimiento de la salud bucodental de niños y adolescentes en Teatinos. Atención cercana adaptada a los más pequeños.',
     image: 'servicio-odontopediatria',
+    specialists: ['team-salamanca', 'team-fernandez-cavada'],
     href: '/tratamientos/odontopediatria',
   },
   {
@@ -98,6 +109,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Mejoramos el color, forma y alineación de tu sonrisa. Ofrecemos carillas, blanqueamiento, diseño digital de sonrisa y reconstrucciones. Primera consulta sin compromiso en Clínica Dentinos.',
     image: 'servicio-odontologia-estetica',
+    specialists: ['team-ternero', 'team-salamanca', 'team-molina'],
     href: '/tratamientos/estetica-dental',
     children: [
       { name: 'Carillas dentales', href: '/tratamientos/carillas' },
@@ -117,6 +129,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Tratamiento avanzado para salvar dientes con afectación en la pulpa (nervio). Tecnología de vanguardia para diagnósticos precisos y procedimientos sin dolor.',
     image: 'servicio-endodoncia',
+    specialists: ['team-molina', 'team-salamanca'],
     href: '/tratamientos/endodoncia',
   },
   {
@@ -128,6 +141,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Recupera la estética y función masticatoria con nuestros implantes dentales. La solución fija y definitiva para sustituir piezas dañadas o ausentes.',
     image: 'servicio-implantes',
+    specialists: ['team-ramos', 'team-ternero'],
     href: '/tratamientos/implantes',
   },
   {
@@ -139,6 +153,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Restauramos la pérdida de uno, varios o todos los dientes. Prótesis a medida que devuelven la salud, estética y funcionalidad a tu boca.',
     image: 'servicio-protesis-dentales',
+    specialists: ['team-ternero', 'team-ramos'],
     href: '/tratamientos/protesis-dentales',
     children: [
       { name: 'Coronas dentales', href: '/tratamientos/protesis-dentales/coronas' },
@@ -156,6 +171,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Prevención, diagnóstico y tratamiento de gingivitis y periodontitis. Protegemos el soporte de tus dientes para mantener encías sanas.',
     image: 'servicio-periodoncia',
+    specialists: ['team-salamanca', 'team-molina'],
     href: '/tratamientos/periodoncia',
     children: [
       { name: 'Higiene bucodental', href: '/tratamientos/periodoncia/higiene-bucodental' },
@@ -173,6 +189,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Tratamientos orientados a conservar tu pieza dental original. Eliminamos únicamente el tejido dañado respetando la estructura sana del diente.',
     image: 'servicio-odontologia-conservadora',
+    specialists: ['team-molina', 'team-salamanca'],
     href: '/tratamientos/odontologia-conservadora',
     children: [
       { name: 'Empaste dental', href: '/tratamientos/odontologia-conservadora/empaste' },
@@ -190,6 +207,7 @@ export const tratamientos: Treatment[] = [
     description:
       'Atención quirúrgica personalizada en Clínica Dentinos. Planificación detallada, alternativas claras y acompañamiento en todo el proceso de recuperación.',
     image: 'servicio-cirugia-oral',
+    specialists: ['team-ramos', 'team-salamanca'],
     href: '/tratamientos/cirugia-oral',
     children: [
       { name: 'Exodoncia', href: '/tratamientos/cirugia-oral/exodoncia' },
